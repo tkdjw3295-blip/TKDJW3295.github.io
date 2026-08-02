@@ -1074,7 +1074,19 @@ async function saveSession(){
     showToast('保存に失敗しました。もう一度お試しください');
   }
 }
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("session-save-btn");
+  if (!saveBtn) {
+    console.error("保存ボタンが見つかりません。IDを確認してください。");
+    return;
+  }
 
+  saveBtn.addEventListener("click", async () => {
+    await saveSession();
+  });
+});
+</script>
 /* ============================= DAY DETAIL ============================= */
 
 const $dayOverlay = document.getElementById('day-overlay');
