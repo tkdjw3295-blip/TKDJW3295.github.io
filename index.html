@@ -1182,6 +1182,38 @@ function loadTraining() {
   const data = localStorage.getItem("trainingLog");
   return data ? JSON.parse(data) : [];
 }
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(() => console.log("Service Worker registered"))
+    .catch(err => console.error("SW registration failed:", err));
+}
 
+// 保存ボタンのクリックイベント
+document.getElementById("session-save-btn").addEventListener("click", () => {
+  const trainingData = {
+    date: new Date().toLocaleDateString(),
+    weight: document.getElementById("weightInput").value,
+    reps: document.getElementById("repsInput").value
+  };
+
+  let logs = loadTraining();
+  logs.push(trainingData);
+  saveTraining(logs);
+
+  alert("記録を保存しました！");
+});
+
+// データ保存関数
+function saveTraining(data) {
+  localStorage.setItem("trainingLog", JSON.stringify(data));
+}
+
+// データ読み込み関数
+function loadTraining() {
+  const data = localStorage.getItem("trainingLog");
+  return data ? JSON.parse(data) : [];
+}
+</script>
 </body>
 </html>
