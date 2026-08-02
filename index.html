@@ -1174,6 +1174,14 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.error("SW registration failed:", err));
 }
 </script>
+function saveTraining(data) {
+  localStorage.setItem("trainingLog", JSON.stringify(data));
+}
+
+function loadTraining() {
+  const data = localStorage.getItem("trainingLog");
+  return data ? JSON.parse(data) : [];
+}
 
 </body>
 </html>
