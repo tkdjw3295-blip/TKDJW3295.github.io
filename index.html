@@ -713,39 +713,57 @@ const state = {
   theme: 'dark',
 };
 
-/* ============================= STORAGE ============================= */
+/* ============================= STORAGE (localStorage — GitHub Pages safe) =============================
+   No server calls, no fetch, no window.storage. Everything is synchronous localStorage wrapped
+   in async functions so the rest of the app (which awaits these) keeps working unchanged.
+   Keys:
+     - "log-index"      -> JSON array of date strings ("YYYY-MM-DD") that have a log
+     - "log-YYYY-MM-DD" -> JSON array of that day's logged entries
+     - "custom-exercises" -> JSON object of user-added exercises per body part
+     - "theme"          -> plain string, one of 'dark' | 'light' | 'colorful'
+============================================================================================= */
+
+const LS_INDEX_KEY = 'log-index';
+function dayLogKey(date){ return `log-${date}`; }
 
 async function loadIndex(){
   try{
-    const res = await window.storage.get('dates-index', false);
-    return res && res.value ? JSON.parse(res.value) : [];
+    const raw = localStorage.getItem(LS_INDEX_KEY);
+    return raw ? JSON.parse(raw) : [];
   }catch(e){ return []; }
 }
-async function saveIndex(arr){
-  try{ await window.storage.set('dates-index', JSON.stringify(arr), false); }catch(e){}
-}
-async function loadDayLog(dateStr){
+async function saveIndex(dates){
   try{
-    const res = await window.storage.get('log:'+dateStr, false);
-    return res && res.value ? JSON.parse(res.value) : [];
+    localStorage.setItem(LS_INDEX_KEY, JSON.stringify(dates));
+    return true;
+  }catch(e){ return false; }
+}
+async function loadDayLog(date){
+  try{
+    const raw = localStorage.getItem(dayLogKey(date));
+    return raw ? JSON.parse(raw) : [];
   }catch(e){ return []; }
 }
-async function saveDayLog(dateStr, entries){
-  try{ await window.storage.set('log:'+dateStr, JSON.stringify(entries), false); return true; }
-  catch(e){ return false; }
+async function saveDayLog(date, data){
+  try{
+    localStorage.setItem(dayLogKey(date), JSON.stringify(data));
+    return true;
+  }catch(e){ return false; }
 }
-async function deleteDayLog(dateStr){
-  try{ await window.storage.delete('log:'+dateStr, false); }catch(e){}
+async function deleteDayLog(date){
+  try{ localStorage.removeItem(dayLogKey(date)); }catch(e){}
 }
 async function loadCustomExercises(){
   try{
-    const res = await window.storage.get('custom-exercises', false);
-    return res && res.value ? JSON.parse(res.value) : {};
+    const raw = localStorage.getItem('custom-exercises');
+    return raw ? JSON.parse(raw) : {};
   }catch(e){ return {}; }
 }
 async function saveCustomExercises(obj){
-  try{ await window.storage.set('custom-exercises', JSON.stringify(obj), false); return true; }
-  catch(e){ return false; }
+  try{
+    localStorage.setItem('custom-exercises', JSON.stringify(obj));
+    return true;
+  }catch(e){ return false; }
 }
 function getExercisesForBodyPart(bpId){
   return (EXERCISES[bpId]||[]).concat(state.customExercises[bpId]||[]);
@@ -1282,12 +1300,15 @@ const $themeSheet = document.getElementById('theme-sheet');
 
 async function loadTheme(){
   try{
-    const res = await window.storage.get('theme', false);
-    return res && res.value ? res.value : 'dark';
+    const raw = localStorage.getItem('theme');
+    return raw ? raw : 'dark';
   }catch(e){ return 'dark'; }
 }
 async function saveTheme(themeId){
-  try{ await window.storage.set('theme', themeId, false); }catch(e){}
+  try{
+    localStorage.setItem('theme', themeId);
+    return true;
+  }catch(e){ return false; }
 }
 function applyTheme(themeId){
   if(themeId === 'dark'){ $phone.removeAttribute('data-theme'); }
