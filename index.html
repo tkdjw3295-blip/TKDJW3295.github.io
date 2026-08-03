@@ -6,9 +6,6 @@
 <title>IRON LOG — トレーニング記録</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
-</head>
 <style>
   :root{
     --bg:#111217;
@@ -25,6 +22,77 @@
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
+  /* ---------- Theme: Light ---------- */
+  #phone[data-theme="light"]{
+    --bg:#F4F5F8;
+    --surface:#FFFFFF;
+    --surface-2:#F0F2F5;
+    --surface-3:#E5E8ED;
+    --accent:#E0472B;
+    --accent-dim:#FBD9CF;
+    --accent-2:#C97800;
+    --text:#1B1D24;
+    --text-dim:#6B7080;
+    --line:#E1E3E8;
+  }
+  #phone[data-theme="light"] .primary-btn,
+  #phone[data-theme="light"] #fab,
+  #phone[data-theme="light"] .toast,
+  #phone[data-theme="light"] .save-mini,
+  #phone[data-theme="light"] #session-bar .count{ color:#FFFFFF; }
+  #phone[data-theme="light"] .kp-key.confirm{ color:#FFFFFF; }
+
+  /* ---------- Theme: Colorful ---------- */
+  #phone[data-theme="colorful"]{
+    --bg:#EAF6FF;
+    --surface:#FFFFFF;
+    --surface-2:#F2F8FF;
+    --surface-3:#E3F1FF;
+    --accent:#FF6B4A;
+    --accent-dim:#FFD9CC;
+    --accent-2:#D98A00;
+    --text:#1B2430;
+    --text-dim:#5C6B7A;
+    --line:#CFE6FA;
+  }
+  #phone[data-theme="colorful"] .primary-btn,
+  #phone[data-theme="colorful"] #fab,
+  #phone[data-theme="colorful"] .toast,
+  #phone[data-theme="colorful"] .save-mini,
+  #phone[data-theme="colorful"] .kp-key.confirm{ color:#20140E; }
+  #phone[data-theme="colorful"] h1, #phone[data-theme="colorful"] .month-label,
+  #phone[data-theme="colorful"] .subview-title{ letter-spacing:0.02em; }
+  /* body-part color coding: --part-color is set inline per screen/tile by JS */
+  #view{ --part-color: var(--accent); }
+  #phone[data-theme="colorful"] .tile{
+    border-width:2px;
+    border-color: var(--part-color);
+    background: color-mix(in srgb, var(--part-color) 12%, var(--surface));
+  }
+  #phone[data-theme="colorful"] .tile .ic{ color: var(--part-color); }
+  #phone[data-theme="colorful"] .tile .label{ color: var(--part-color); font-weight:800; }
+  #phone[data-theme="colorful"] .ex-tile{
+    border-width:2px;
+    border-color: var(--part-color);
+  }
+  #phone[data-theme="colorful"] .ex-tile .ic-wrap{
+    background: color-mix(in srgb, var(--part-color) 22%, var(--surface-2));
+    border-color: var(--part-color);
+  }
+  #phone[data-theme="colorful"] .ex-tile .ic{ color: var(--part-color); }
+  #phone[data-theme="colorful"] .ex-hero{
+    border-width:2px; border-color: var(--part-color);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--part-color) 22%, var(--surface-2)), var(--surface));
+  }
+  #phone[data-theme="colorful"] .ex-hero .ic-wrap{ background: color-mix(in srgb, var(--part-color) 32%, var(--surface-3)); }
+  #phone[data-theme="colorful"] .ex-hero .ic{ color: var(--part-color); }
+  #phone[data-theme="colorful"] .ex-hero .part{ color: var(--part-color); font-weight:700; }
+  #phone[data-theme="colorful"] .day-ex-block{ border-width:2px; border-color: var(--part-color); }
+  #phone[data-theme="colorful"] .day-ex-block .ic-wrap{ background: color-mix(in srgb, var(--part-color) 24%, var(--surface-3)); }
+  #phone[data-theme="colorful"] .day-ex-block .ic{ color: var(--part-color); }
+  #phone[data-theme="colorful"] .primary-btn{ background: var(--part-color); }
+  #phone[data-theme="colorful"] .cal-cell.has-log{ background: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
+  #phone[data-theme="colorful"] .cal-cell.has-log .plate-dot{ background: var(--accent); }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:#0A0A0D;height:100%;}
   body{
@@ -229,7 +297,7 @@
     z-index:40;
   }
   #session-bar.show{display:flex;}
-  #session-bar .left{display:flex; align-items:center; gap:10px;}
+  #session-bar .left{display:flex; align-items:center; gap:10px; cursor:pointer;}
   #session-bar .count{
     width:30px;height:30px;border-radius:50%; background:var(--accent); color:#1a0d08;
     display:flex;align-items:center;justify-content:center; font-weight:800; font-size:14px; flex-shrink:0;
@@ -262,13 +330,13 @@
   #fab svg{width:26px;height:26px;}
 
   /* ---------- Keypad modal ---------- */
-  #keypad-overlay, #addex-overlay{
+  #keypad-overlay, #addex-overlay, #theme-overlay{
     position:absolute; inset:0; background:rgba(8,8,10,0.72);
     display:none; align-items:flex-end; z-index:100;
     backdrop-filter:blur(2px);
   }
-  #keypad-overlay.show, #addex-overlay.show{display:flex;}
-  #keypad-sheet, #addex-sheet{
+  #keypad-overlay.show, #addex-overlay.show, #theme-overlay.show{display:flex;}
+  #keypad-sheet, #addex-sheet, #theme-sheet{
     width:100%; background:var(--surface); border-radius:26px 26px 0 0;
     padding:20px 20px calc(20px + var(--safe-bottom));
     border-top:1px solid var(--line);
@@ -298,6 +366,23 @@
   }
   .add-ex-tile .name{font-size:14.5px; font-weight:700; color:var(--text);}
   .add-ex-tile .sub2{font-size:11px; color:var(--text-dim);}
+
+  .theme-opt{
+    display:flex; align-items:center; gap:14px;
+    background:var(--surface-2); border:2px solid var(--line); border-radius:18px;
+    padding:14px; margin-bottom:12px; cursor:pointer;
+  }
+  .theme-opt.selected{border-color:var(--accent);}
+  .theme-opt:active{transform:scale(0.99);}
+  .theme-opt .swatch{
+    width:52px;height:52px;border-radius:14px; flex-shrink:0;
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .theme-opt .swatch div:first-child{grid-column:1/3;}
+  .theme-opt .info .t-name{font-size:15px; font-weight:800;}
+  .theme-opt .info .t-desc{font-size:12px; color:var(--text-dim); margin-top:2px; line-height:1.5;}
+  .theme-opt .check{margin-left:auto; color:var(--accent); flex-shrink:0;}
   @keyframes slideup{from{transform:translateY(30px); opacity:0.4;} to{transform:translateY(0); opacity:1;}}
   #keypad-sheet .kp-label{font-size:12px; color:var(--text-dim); font-weight:700; text-align:center; letter-spacing:0.06em;}
   #keypad-sheet .kp-display{
@@ -343,8 +428,13 @@
   .day-ex-block .ic{width:20px;height:20px;}
   .day-ex-block .name{font-size:14.5px; font-weight:700; flex:1;}
   .day-ex-block .del{color:var(--text-dim); cursor:pointer; padding:4px;}
+  .reorder-btns{display:flex; align-items:center; gap:2px; flex-shrink:0;}
+  .reorder-btn{color:var(--text-dim); cursor:pointer; padding:4px;}
+  .reorder-btn.disabled{opacity:0.25; pointer-events:none;}
   .day-sets-line{font-family:'DM Mono',monospace; font-size:13px; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:6px;}
   .day-sets-line span{background:var(--surface-3); border-radius:8px; padding:4px 8px; color:var(--text);}
+  .chip-values{font-family:'DM Mono',monospace; font-size:13.5px; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:6px;}
+  .chip-values span{background:var(--surface-3); border-radius:8px; padding:5px 9px; color:var(--text); font-weight:600;}
 
   .toast{
     position:absolute; top:calc(14px + var(--safe-top)); left:50%; transform:translateX(-50%);
@@ -363,17 +453,22 @@
       <div class="plate-mark"></div>
       <h1>IRON LOG</h1>
     </div>
-    <div class="icon-btn" id="today-btn" title="今日へ">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2" fill="currentColor" stroke="none"/></svg>
+    <div style="display:flex; gap:8px;">
+      <div class="icon-btn" id="theme-btn" title="配色を変更">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c2.3 0 4.2-1.9 4.2-4.2C21.5 6.3 17.2 2 12 2z"/><circle cx="7" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="icon-btn" id="today-btn" title="今日へ">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2" fill="currentColor" stroke="none"/></svg>
+      </div>
     </div>
   </div>
 
   <div id="view"></div>
 
   <div id="session-bar">
-    <div class="left">
+    <div class="left" id="session-bar-left">
       <div class="count" id="session-count">0</div>
-      <div class="txt">今日の記録に追加済み</div>
+      <div class="txt">今日の記録に追加済み（タップで並べ替え）</div>
     </div>
     <button class="save-mini" id="session-save-btn">カレンダーに記録する</button>
   </div>
@@ -395,6 +490,10 @@
 
   <div id="addex-overlay">
     <div id="addex-sheet"></div>
+  </div>
+
+  <div id="theme-overlay">
+    <div id="theme-sheet"></div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -477,17 +576,31 @@ const ICONS = {
     <path d="M8 8 H26 L42 24 L24 42 L8 26 Z"/>
     <circle cx="16" cy="16" r="3" fill="currentColor" stroke="none"/>
   </svg>`,
+  cardio: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="24" cy="24" r="18"/>
+    <path d="M14 24 H19 L22 17 L27 31 L30 24 H34"/>
+  </svg>`,
+  reorder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg>`,
+  palette: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c2.3 0 4.2-1.9 4.2-4.2C21.5 6.3 17.2 2 12 2z"/><circle cx="7" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>`,
 };
 
 const BODY_PARTS = [
-  { id:'chest',     label:'胸',   sub:'Chest',     icon:'chest' },
-  { id:'back',      label:'背中', sub:'Back',      icon:'back' },
-  { id:'legs',      label:'脚',   sub:'Legs',      icon:'legs' },
-  { id:'glutes',    label:'ヒップ', sub:'Glutes',  icon:'glutes' },
-  { id:'shoulders', label:'肩',   sub:'Shoulders', icon:'shoulders' },
-  { id:'arms',      label:'腕',   sub:'Arms',      icon:'arms' },
-  { id:'abs',       label:'腹',   sub:'Abs',       icon:'abs' },
+  { id:'chest',     label:'胸',   sub:'Chest',     icon:'chest',     color:'#FF6B6B' },
+  { id:'back',      label:'背中', sub:'Back',      icon:'back',      color:'#4D96FF' },
+  { id:'legs',      label:'脚',   sub:'Legs',      icon:'legs',      color:'#4CD37C' },
+  { id:'glutes',    label:'ヒップ', sub:'Glutes',  icon:'glutes',    color:'#FF6FCF' },
+  { id:'shoulders', label:'肩',   sub:'Shoulders', icon:'shoulders', color:'#B18CFF' },
+  { id:'arms',      label:'腕',   sub:'Arms',      icon:'arms',      color:'#FFC93D' },
+  { id:'abs',       label:'腹',   sub:'Abs',       icon:'abs',       color:'#3DD9C7' },
+  { id:'aerobic',   label:'有酸素', sub:'Cardio',  icon:'cardio',    color:'#33C6E0' },
 ];
+
+/* Default field schema (weight/reps) used by all strength exercises unless overridden */
+const DEFAULT_FIELDS = [
+  { key:'weight', label:'重量', unit:'kg', decimal:true },
+  { key:'reps', label:'回数', unit:'reps', decimal:false },
+];
+function getExerciseFields(ex){ return ex.fields || DEFAULT_FIELDS; }
 
 const EXERCISES = {
   chest: [
@@ -545,6 +658,28 @@ const EXERCISES = {
     { id:'cable_crunch', name:'ケーブルクランチ', equip:'cable', equipLabel:'ケーブル' },
     { id:'russian_twist', name:'ロシアンツイスト', equip:'dumbbell', equipLabel:'ダンベル' },
   ],
+  aerobic: [
+    { id:'treadmill', name:'トレッドミル', equip:'cardio', equipLabel:'有酸素',
+      fields:[
+        { key:'time', label:'時間', unit:'min', decimal:false },
+        { key:'speed', label:'速度', unit:'km/h', decimal:true },
+        { key:'incline', label:'傾斜', unit:'%', decimal:true },
+      ]
+    },
+    { id:'aero_bike', name:'エアロバイク', equip:'cardio', equipLabel:'有酸素',
+      fields:[
+        { key:'time', label:'時間', unit:'min', decimal:false },
+        { key:'level', label:'負荷レベル', unit:'', decimal:false },
+        { key:'cadence', label:'ケイデンス', unit:'rpm', decimal:false },
+      ]
+    },
+    { id:'cross_trainer', name:'クロストレーナー', equip:'cardio', equipLabel:'有酸素',
+      fields:[
+        { key:'time', label:'時間', unit:'min', decimal:false },
+        { key:'level', label:'負荷レベル', unit:'', decimal:false },
+      ]
+    },
+  ],
 };
 
 const DOW = ['日','月','火','水','木','金','土'];
@@ -575,6 +710,7 @@ const state = {
   dayDetailEntries: null,
   loading: true,
   customExercises: {},      // {bodyPartId: [{id,name,equip,equipLabel,custom:true}]}
+  theme: 'dark',
 };
 
 /* ============================= STORAGE ============================= */
@@ -643,7 +779,7 @@ function showToast(msg){
 }
 
 function updateSessionBar(){
-  if(state.session.length > 0 && state.view !== 'calendar'){
+  if(state.session.length > 0 && state.view !== 'calendar' && state.view !== 'session'){
     $sessionBar.classList.add('show');
     $sessionCount.textContent = state.session.length;
   } else {
@@ -688,7 +824,7 @@ function renderCalendar(){
             <div class="date">${fmtDate(day.date)}</div>
             <div class="name">${ent.name}</div>
           </div>
-          <div class="count">${ent.sets.length}セット</div>
+          <div class="count">${ent.sets.length}件</div>
         </div>`;
       }
     }
@@ -743,7 +879,7 @@ function renderBodyPartSelect(){
     <div class="subview-title">部位を選択</div>
     <div class="grid-2">
       ${BODY_PARTS.map(bp => `
-        <div class="tile" data-id="${bp.id}">
+        <div class="tile" data-id="${bp.id}" style="--part-color:${bp.color};">
           ${icon(bp.icon,'ic')}
           <div class="label">${bp.label}</div>
           <div class="sub">${bp.sub}</div>
@@ -774,6 +910,7 @@ function renderExerciseSelect(){
   document.getElementById('fab-group').style.display = 'none';
   const bp = state.bodyPart;
   const list = getExercisesForBodyPart(bp.id);
+  $view.style.setProperty('--part-color', bp.color || 'var(--accent)');
   $view.innerHTML = `
     <div class="subview-top">
       <div class="icon-btn" id="back-btn">
@@ -817,21 +954,29 @@ function renderExerciseSelect(){
 
 /* ============================= VIEW: SET INPUT ============================= */
 
-let pendingSet = { weight:null, reps:null };
+let pendingSet = {};
+
+function setValueChips(fields, s){
+  return fields.map(f => `<span>${s[f.key]}${f.unit?f.unit:''}</span>`).join('');
+}
 
 function renderSets(){
   document.getElementById('fab-group').style.display = 'none';
   const bp = state.bodyPart, ex = state.exercise;
+  const fields = getExerciseFields(ex);
+  $view.style.setProperty('--part-color', bp.color || 'var(--accent)');
 
   const setsHtml = state.currentSets.map((s,i)=>`
     <div class="set-row">
       <div class="idx">${i+1}</div>
-      <div class="vals"><b>${s.weight}</b> kg &nbsp;×&nbsp; <b>${s.reps}</b> reps</div>
+      <div class="vals chip-values">${setValueChips(fields, s)}</div>
       <div class="del" data-i="${i}">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </div>
     </div>
   `).join('');
+
+  const allFilled = fields.every(f => pendingSet[f.key]!==null && pendingSet[f.key]!==undefined);
 
   $view.innerHTML = `
     <div class="subview-top">
@@ -848,44 +993,43 @@ function renderSets(){
       </div>
     </div>
 
-    ${setsHtml ? `<div class="section-label">記録したセット</div>${setsHtml}` : ''}
+    ${setsHtml ? `<div class="section-label">記録した内容</div>${setsHtml}` : ''}
 
     <div class="add-set-row">
-      <div class="input-box ${pendingSet.weight!==null?'filled':''}" id="weight-box">
-        <div class="lbl">重量 (kg)</div>
-        <div class="val">${pendingSet.weight!==null?pendingSet.weight:'―'}</div>
-      </div>
-      <div class="input-box ${pendingSet.reps!==null?'filled':''}" id="reps-box">
-        <div class="lbl">回数 (reps)</div>
-        <div class="val">${pendingSet.reps!==null?pendingSet.reps:'―'}</div>
-      </div>
+      ${fields.map(f => `
+        <div class="input-box ${pendingSet[f.key]!==null && pendingSet[f.key]!==undefined ?'filled':''}" data-field="${f.key}">
+          <div class="lbl">${f.label}${f.unit?' ('+f.unit+')':''}</div>
+          <div class="val">${pendingSet[f.key]!==null && pendingSet[f.key]!==undefined ? pendingSet[f.key] : '―'}</div>
+        </div>
+      `).join('')}
     </div>
-    <button class="primary-btn" id="add-set-btn" ${(pendingSet.weight===null||pendingSet.reps===null)?'disabled':''}>
+    <button class="primary-btn" id="add-set-btn" ${allFilled?'':'disabled'}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      このセットを追加
+      この記録を追加
     </button>
     <button class="ghost-btn" id="finish-ex-btn" ${state.currentSets.length===0?'disabled':''}>
-      この種目を記録に追加 (${state.currentSets.length}セット)
+      この種目を記録に追加 (${state.currentSets.length}件)
     </button>
   `;
 
-  document.getElementById('back-btn').onclick = ()=>{ state.view='exercise'; state.currentSets=[]; pendingSet={weight:null,reps:null}; render(); };
+  document.getElementById('back-btn').onclick = ()=>{ state.view='exercise'; state.currentSets=[]; pendingSet={}; render(); };
 
-  document.getElementById('weight-box').onclick = ()=>openKeypad({
-    label:'重量を入力', unit:'kg', decimal:true, initial: pendingSet.weight,
-    onConfirm:(v)=>{ pendingSet.weight = v; render(); }
-  });
-  document.getElementById('reps-box').onclick = ()=>openKeypad({
-    label:'回数を入力', unit:'reps', decimal:false, initial: pendingSet.reps,
-    onConfirm:(v)=>{ pendingSet.reps = v; render(); }
+  $view.querySelectorAll('.input-box[data-field]').forEach(box=>{
+    const f = fields.find(ff=>ff.key===box.dataset.field);
+    box.onclick = ()=>openKeypad({
+      label: f.label+'を入力', unit: f.unit, decimal: f.decimal, initial: pendingSet[f.key],
+      onConfirm:(v)=>{ pendingSet[f.key] = v; render(); }
+    });
   });
 
   const addBtn = document.getElementById('add-set-btn');
   if(addBtn){
     addBtn.onclick = ()=>{
-      if(pendingSet.weight===null||pendingSet.reps===null) return;
-      state.currentSets.push({weight:pendingSet.weight, reps:pendingSet.reps});
-      pendingSet = {weight:null, reps:null};
+      if(!fields.every(f => pendingSet[f.key]!==null && pendingSet[f.key]!==undefined)) return;
+      const newSet = {};
+      fields.forEach(f => newSet[f.key] = pendingSet[f.key]);
+      state.currentSets.push(newSet);
+      pendingSet = {};
       render();
     };
   }
@@ -900,10 +1044,11 @@ function renderSets(){
       state.session.push({
         bodyPartId: bp.id, bodyPartLabel: bp.label,
         exerciseId: ex.id, name: ex.name, equip: ex.equip, equipLabel: ex.equipLabel,
+        fields: fields,
         sets: state.currentSets.slice(),
       });
       state.currentSets = [];
-      pendingSet = {weight:null, reps:null};
+      pendingSet = {};
       state.view = 'bodypart';
       render();
       showToast(ex.name + ' を追加しました');
@@ -911,7 +1056,72 @@ function renderSets(){
   }
 }
 
-/* ============================= KEYPAD ============================= */
+/* ============================= VIEW: SESSION REVIEW (REORDER) ============================= */
+
+function renderSessionReview(){
+  document.getElementById('fab-group').style.display = 'none';
+  const items = state.session;
+
+  $view.innerHTML = `
+    <div class="subview-top">
+      <div class="icon-btn" id="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="crumb">今日の記録</div>
+    </div>
+    <div class="subview-title">並べ替え・確認</div>
+    ${items.map((it,i)=>`
+      <div class="day-ex-block" data-i="${i}" style="--part-color:${BODY_PARTS.find(b=>b.id===it.bodyPartId)?.color || 'var(--accent)'};">
+        <div class="hd">
+          <div class="ic-wrap">${icon(it.equip,'ic')}</div>
+          <div class="name">${i+1}. ${it.name}<br><span style="font-size:11px;color:var(--text-dim);font-weight:600;">${it.bodyPartLabel}</span></div>
+          <div class="reorder-btns">
+            <div class="reorder-btn ${i===0?'disabled':''}" data-act="up" data-i="${i}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+            </div>
+            <div class="reorder-btn ${i===items.length-1?'disabled':''}" data-act="down" data-i="${i}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="del" data-act="del" data-i="${i}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="chip-values">${it.sets.map(s=>setValueChips(it.fields||DEFAULT_FIELDS, s)).join('')}</div>
+      </div>
+    `).join('')}
+    ${items.length===0 ? `<div class="empty-hint">記録がありません</div>` : ''}
+    <button class="primary-btn" id="review-save-btn" style="margin-top:18px;" ${items.length===0?'disabled':''}>カレンダーに記録する</button>
+  `;
+
+  document.getElementById('back-btn').onclick = ()=>{ state.view='bodypart'; render(); };
+
+  $view.querySelectorAll('.reorder-btn[data-act="up"]').forEach(el=>{
+    el.onclick = ()=>{
+      const i = Number(el.dataset.i);
+      if(i<=0) return;
+      [state.session[i-1], state.session[i]] = [state.session[i], state.session[i-1]];
+      render();
+    };
+  });
+  $view.querySelectorAll('.reorder-btn[data-act="down"]').forEach(el=>{
+    el.onclick = ()=>{
+      const i = Number(el.dataset.i);
+      if(i>=state.session.length-1) return;
+      [state.session[i+1], state.session[i]] = [state.session[i], state.session[i+1]];
+      render();
+    };
+  });
+  $view.querySelectorAll('.del[data-act="del"]').forEach(el=>{
+    el.onclick = ()=>{
+      state.session.splice(Number(el.dataset.i),1);
+      if(state.session.length===0){ state.view='bodypart'; }
+      render();
+    };
+  });
+  const saveBtn = document.getElementById('review-save-btn');
+  if(saveBtn) saveBtn.onclick = saveSession;
+}
 
 const $kpOverlay = document.getElementById('keypad-overlay');
 const $kpSheet = document.getElementById('keypad-sheet');
@@ -928,7 +1138,11 @@ function closeKeypad(){
 }
 
 function renderKeypad(label, unit){
-  const quick = unit==='kg' ? [10,20,30,40,50,60] : [5,8,10,12,15,20];
+  const QUICKS = {
+    'kg':[10,20,30,40,50,60], 'reps':[5,8,10,12,15,20], 'min':[5,10,15,20,30,45],
+    'km/h':[4,5,6,7,8,10], '%':[0,1,2,3,5,8], 'rpm':[60,70,80,90,100,110], '':[1,2,3,4,5,6,7,8],
+  };
+  const quick = QUICKS[unit] || [5,8,10,12,15,20];
   $kpSheet.innerHTML = `
     <div class="kp-label">${label}</div>
     <div class="kp-display"><span id="kp-val">${kpState.value || '0'}</span><span class="unit">${unit}</span></div>
@@ -1054,6 +1268,68 @@ function closeAddExerciseModal(){
 }
 $addexOverlay.addEventListener('click', (e)=>{ if(e.target===$addexOverlay) closeAddExerciseModal(); });
 
+/* ============================= THEME ============================= */
+
+const THEMES = [
+  { id:'dark', name:'ダーク', desc:'黒基調で目に優しく、ジムでも見やすい定番配色', colors:['#111217','#FF5A36','#FFC93D','#242730'] },
+  { id:'light', name:'ライト', desc:'白基調の明るい配色。日中の屋外でも見やすい', colors:['#FFFFFF','#E0472B','#C97800','#F0F2F5'] },
+  { id:'colorful', name:'カラフル', desc:'部位ごとに色分け・高視認性で子どもにも使いやすい', colors:['#EAF6FF','#FF6B6B','#4D96FF','#FFC93D'] },
+];
+
+const $phone = document.getElementById('phone');
+const $themeOverlay = document.getElementById('theme-overlay');
+const $themeSheet = document.getElementById('theme-sheet');
+
+async function loadTheme(){
+  try{
+    const res = await window.storage.get('theme', false);
+    return res && res.value ? res.value : 'dark';
+  }catch(e){ return 'dark'; }
+}
+async function saveTheme(themeId){
+  try{ await window.storage.set('theme', themeId, false); }catch(e){}
+}
+function applyTheme(themeId){
+  if(themeId === 'dark'){ $phone.removeAttribute('data-theme'); }
+  else { $phone.dataset.theme = themeId; }
+  document.body.style.background = themeId==='light' ? '#E4E7EC' : themeId==='colorful' ? '#CDE7F7' : '#0A0A0D';
+  state.theme = themeId;
+}
+function openThemeModal(){
+  $themeSheet.innerHTML = `
+    <div class="handle"></div>
+    <h2>配色を選ぶ</h2>
+    ${THEMES.map(t => `
+      <div class="theme-opt ${state.theme===t.id?'selected':''}" data-id="${t.id}">
+        <div class="swatch">
+          <div style="background:${t.colors[0]}"></div>
+          <div style="background:${t.colors[1]}"></div>
+          <div style="background:${t.colors[2]}"></div>
+          <div style="background:${t.colors[3]}"></div>
+        </div>
+        <div class="info">
+          <div class="t-name">${t.name}</div>
+          <div class="t-desc">${t.desc}</div>
+        </div>
+        ${state.theme===t.id ? `<div class="check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>` : ''}
+      </div>
+    `).join('')}
+  `;
+  $themeOverlay.classList.add('show');
+  $themeSheet.querySelectorAll('.theme-opt[data-id]').forEach(el=>{
+    el.onclick = async ()=>{
+      const id = el.dataset.id;
+      applyTheme(id);
+      await saveTheme(id);
+      closeThemeModal();
+      render();
+    };
+  });
+}
+function closeThemeModal(){ $themeOverlay.classList.remove('show'); }
+$themeOverlay.addEventListener('click', (e)=>{ if(e.target===$themeOverlay) closeThemeModal(); });
+document.getElementById('theme-btn').onclick = openThemeModal;
+
 /* ============================= SESSION SAVE ============================= */
 
 async function saveSession(){
@@ -1074,19 +1350,7 @@ async function saveSession(){
     showToast('保存に失敗しました。もう一度お試しください');
   }
 }
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-  const saveBtn = document.getElementById("session-save-btn");
-  if (!saveBtn) {
-    console.error("保存ボタンが見つかりません。IDを確認してください。");
-    return;
-  }
 
-  saveBtn.addEventListener("click", async () => {
-    await saveSession();
-  });
-});
-</script>
 /* ============================= DAY DETAIL ============================= */
 
 const $dayOverlay = document.getElementById('day-overlay');
@@ -1110,21 +1374,50 @@ function renderDayDetail(){
     <div class="handle"></div>
     <h2>${fmtDate(date)}</h2>
     ${entries.length ? entries.map((ent,i)=>`
-      <div class="day-ex-block">
+      <div class="day-ex-block" style="--part-color:${BODY_PARTS.find(b=>b.id===ent.bodyPartId)?.color || 'var(--accent)'};">
         <div class="hd">
           <div class="ic-wrap">${icon(ent.equip,'ic')}</div>
           <div class="name">${ent.name}</div>
-          <div class="del" data-i="${i}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          <div class="reorder-btns">
+            <div class="reorder-btn ${i===0?'disabled':''}" data-act="up" data-i="${i}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+            </div>
+            <div class="reorder-btn ${i===entries.length-1?'disabled':''}" data-act="down" data-i="${i}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="del" data-act="del" data-i="${i}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </div>
           </div>
         </div>
         <div class="day-sets-line">
-          ${ent.sets.map(s=>`<span>${s.weight}kg × ${s.reps}reps</span>`).join('')}
+          ${ent.sets.map(s=>setValueChips(ent.fields||DEFAULT_FIELDS, s)).join('')}
         </div>
       </div>
     `).join('') : `<div class="empty-hint">この日の記録はありません</div>`}
   `;
-  $daySheet.querySelectorAll('.del[data-i]').forEach(el=>{
+  async function persistOrder(){
+    await saveDayLog(date, state.dayDetailEntries);
+  }
+  $daySheet.querySelectorAll('.reorder-btn[data-act="up"]').forEach(el=>{
+    el.onclick = async ()=>{
+      const i = Number(el.dataset.i);
+      if(i<=0) return;
+      [state.dayDetailEntries[i-1], state.dayDetailEntries[i]] = [state.dayDetailEntries[i], state.dayDetailEntries[i-1]];
+      await persistOrder();
+      renderDayDetail();
+    };
+  });
+  $daySheet.querySelectorAll('.reorder-btn[data-act="down"]').forEach(el=>{
+    el.onclick = async ()=>{
+      const i = Number(el.dataset.i);
+      if(i>=state.dayDetailEntries.length-1) return;
+      [state.dayDetailEntries[i+1], state.dayDetailEntries[i]] = [state.dayDetailEntries[i], state.dayDetailEntries[i+1]];
+      await persistOrder();
+      renderDayDetail();
+    };
+  });
+  $daySheet.querySelectorAll('.del[data-act="del"]').forEach(el=>{
     el.onclick = async ()=>{
       const i = Number(el.dataset.i);
       state.dayDetailEntries.splice(i,1);
@@ -1151,6 +1444,7 @@ function render(){
   else if(state.view==='bodypart') renderBodyPartSelect();
   else if(state.view==='exercise') renderExerciseSelect();
   else if(state.view==='sets') renderSets();
+  else if(state.view==='session') renderSessionReview();
   updateSessionBar();
 }
 
@@ -1166,11 +1460,18 @@ document.getElementById('today-btn').onclick = ()=>{
   render();
 };
 document.getElementById('session-save-btn').onclick = saveSession;
+document.getElementById('session-bar-left').onclick = ()=>{
+  if(!state.session.length) return;
+  state.view = 'session';
+  render();
+};
 
 /* ============================= INIT ============================= */
 
 (async function init(){
   $view.innerHTML = `<div class="empty-hint">読み込み中…</div>`;
+  const savedTheme = await loadTheme();
+  applyTheme(savedTheme);
   state.customExercises = await loadCustomExercises();
   await refreshIndexAndRecents();
   state.loading = false;
@@ -1179,12 +1480,5 @@ document.getElementById('session-save-btn').onclick = saveSession;
 
 })();
 </script>
-  <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("Service Worker registered"))
-    .catch(err => console.error("SW registration failed:", err));
-}
-
 </body>
 </html>
