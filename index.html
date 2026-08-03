@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>IRON LOG — トレーニング記録</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -30,10 +34,10 @@
     --surface-3:#E5E8ED;
     --accent:#E0472B;
     --accent-dim:#FBD9CF;
-    --accent-2:#C97800;
-    --text:#1B1D24;
-    --text-dim:#6B7080;
-    --line:#E1E3E8;
+    --accent-2:#B36A00;
+    --text:#14161C;
+    --text-dim:#4B5563;
+    --line:#D7DAE1;
   }
   #phone[data-theme="light"] .primary-btn,
   #phone[data-theme="light"] #fab,
@@ -41,6 +45,10 @@
   #phone[data-theme="light"] .save-mini,
   #phone[data-theme="light"] #session-bar .count{ color:#FFFFFF; }
   #phone[data-theme="light"] .kp-key.confirm{ color:#FFFFFF; }
+  #phone[data-theme="light"] .cal-cell{ border:1px solid var(--line); }
+  #phone[data-theme="light"] .set-row, #phone[data-theme="light"] .recent-item,
+  #phone[data-theme="light"] .ex-tile, #phone[data-theme="light"] .day-ex-block,
+  #phone[data-theme="light"] .input-box{ border-color:var(--line); }
 
   /* ---------- Theme: Colorful ---------- */
   #phone[data-theme="colorful"]{
@@ -50,10 +58,10 @@
     --surface-3:#E3F1FF;
     --accent:#FF6B4A;
     --accent-dim:#FFD9CC;
-    --accent-2:#D98A00;
-    --text:#1B2430;
-    --text-dim:#5C6B7A;
-    --line:#CFE6FA;
+    --accent-2:#B36A00;
+    --text:#12202E;
+    --text-dim:#41505F;
+    --line:#BFE0F7;
   }
   #phone[data-theme="colorful"] .primary-btn,
   #phone[data-theme="colorful"] #fab,
@@ -62,37 +70,41 @@
   #phone[data-theme="colorful"] .kp-key.confirm{ color:#20140E; }
   #phone[data-theme="colorful"] h1, #phone[data-theme="colorful"] .month-label,
   #phone[data-theme="colorful"] .subview-title{ letter-spacing:0.02em; }
-  /* body-part color coding: --part-color is set inline per screen/tile by JS */
+  /* body-part color coding: --part-color is set inline per screen/tile by JS.
+     It is used only for icons/borders/tinted backgrounds — never for text —
+     since several body-part colors (e.g. arms yellow, aerobic cyan) are far
+     too light to read as text on a bright background. */
   #view{ --part-color: var(--accent); }
   #phone[data-theme="colorful"] .tile{
     border-width:2px;
     border-color: var(--part-color);
-    background: color-mix(in srgb, var(--part-color) 12%, var(--surface));
+    background: color-mix(in srgb, var(--part-color) 14%, var(--surface));
   }
-  #phone[data-theme="colorful"] .tile .ic{ color: var(--part-color); }
-  #phone[data-theme="colorful"] .tile .label{ color: var(--part-color); font-weight:800; }
+  #phone[data-theme="colorful"] .tile .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
+  #phone[data-theme="colorful"] .tile .label{ color: var(--text); font-weight:800; }
   #phone[data-theme="colorful"] .ex-tile{
     border-width:2px;
     border-color: var(--part-color);
   }
   #phone[data-theme="colorful"] .ex-tile .ic-wrap{
-    background: color-mix(in srgb, var(--part-color) 22%, var(--surface-2));
+    background: color-mix(in srgb, var(--part-color) 24%, var(--surface-2));
     border-color: var(--part-color);
   }
-  #phone[data-theme="colorful"] .ex-tile .ic{ color: var(--part-color); }
+  #phone[data-theme="colorful"] .ex-tile .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
   #phone[data-theme="colorful"] .ex-hero{
     border-width:2px; border-color: var(--part-color);
-    background: linear-gradient(135deg, color-mix(in srgb, var(--part-color) 22%, var(--surface-2)), var(--surface));
+    background: linear-gradient(135deg, color-mix(in srgb, var(--part-color) 24%, var(--surface-2)), var(--surface));
   }
-  #phone[data-theme="colorful"] .ex-hero .ic-wrap{ background: color-mix(in srgb, var(--part-color) 32%, var(--surface-3)); }
-  #phone[data-theme="colorful"] .ex-hero .ic{ color: var(--part-color); }
-  #phone[data-theme="colorful"] .ex-hero .part{ color: var(--part-color); font-weight:700; }
+  #phone[data-theme="colorful"] .ex-hero .ic-wrap{ background: color-mix(in srgb, var(--part-color) 34%, var(--surface-3)); }
+  #phone[data-theme="colorful"] .ex-hero .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
+  #phone[data-theme="colorful"] .ex-hero .part{ color: var(--text-dim); font-weight:700; }
   #phone[data-theme="colorful"] .day-ex-block{ border-width:2px; border-color: var(--part-color); }
-  #phone[data-theme="colorful"] .day-ex-block .ic-wrap{ background: color-mix(in srgb, var(--part-color) 24%, var(--surface-3)); }
-  #phone[data-theme="colorful"] .day-ex-block .ic{ color: var(--part-color); }
-  #phone[data-theme="colorful"] .primary-btn{ background: var(--part-color); }
-  #phone[data-theme="colorful"] .cal-cell.has-log{ background: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
+  #phone[data-theme="colorful"] .day-ex-block .ic-wrap{ background: color-mix(in srgb, var(--part-color) 26%, var(--surface-3)); }
+  #phone[data-theme="colorful"] .day-ex-block .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
+  #phone[data-theme="colorful"] .primary-btn{ background: color-mix(in srgb, var(--part-color) 85%, black); }
+  #phone[data-theme="colorful"] .cal-cell.has-log{ background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
   #phone[data-theme="colorful"] .cal-cell.has-log .plate-dot{ background: var(--accent); }
+  #phone[data-theme="colorful"] .cal-cell{ border:1px solid var(--line); }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:#0A0A0D;height:100%;}
   body{
@@ -1184,6 +1196,10 @@ function renderKeypad(label, unit){
       else if(k==='clear'){ kpState.value=''; }
       else if(k==='.'){ if(!kpState.value.includes('.')) kpState.value += (kpState.value===''?'0.':'.'); }
       else {
+        if(kpState.decimal && kpState.value.includes('.')){
+          const decimalPart = kpState.value.split('.')[1] || '';
+          if(decimalPart.length >= 1) return; // already has 1 decimal digit — ignore further taps
+        }
         if(kpState.value.length < 6) kpState.value += k;
       }
       document.getElementById('kp-val').textContent = kpState.value || '0';
@@ -1500,6 +1516,16 @@ document.getElementById('session-bar-left').onclick = ()=>{
 })();
 
 })();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((reg) => console.log('Service Worker registered successfully. Scope:', reg.scope))
+        .catch((err) => console.error('Service Worker registration failed:', err));
+    });
+  }
 </script>
 </body>
 </html>
