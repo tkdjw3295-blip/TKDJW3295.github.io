@@ -1,8 +1,8 @@
 {
   "name": "Weight Training Log",
   "short_name": "Training Log",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#111217",
