@@ -49,6 +49,15 @@
   #phone[data-theme="light"] .set-row, #phone[data-theme="light"] .recent-item,
   #phone[data-theme="light"] .ex-tile, #phone[data-theme="light"] .day-ex-block,
   #phone[data-theme="light"] .input-box{ border-color:var(--line); }
+  #phone[data-theme="light"] .tile .ic,
+  #phone[data-theme="light"] .ex-tile .ic,
+  #phone[data-theme="light"] .ex-hero .ic,
+  #phone[data-theme="light"] .day-ex-block .ic,
+  #phone[data-theme="light"] .recent-item .ic{ color:#000000; }
+  #phone[data-theme="light"] .tile .label,
+  #phone[data-theme="light"] .ex-tile .name,
+  #phone[data-theme="light"] .ex-hero .name,
+  #phone[data-theme="light"] .day-ex-block .name{ color:#000000; }
 
   /* ---------- Theme: Colorful ---------- */
   #phone[data-theme="colorful"]{
@@ -90,21 +99,25 @@
     background: color-mix(in srgb, var(--part-color) 24%, var(--surface-2));
     border-color: var(--part-color);
   }
-  #phone[data-theme="colorful"] .ex-tile .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
+  #phone[data-theme="colorful"] .ex-tile .ic{ color:#000000; }
+  #phone[data-theme="colorful"] .ex-tile .name{ color:#000000; }
   #phone[data-theme="colorful"] .ex-hero{
     border-width:2px; border-color: var(--part-color);
     background: linear-gradient(135deg, color-mix(in srgb, var(--part-color) 24%, var(--surface-2)), var(--surface));
   }
   #phone[data-theme="colorful"] .ex-hero .ic-wrap{ background: color-mix(in srgb, var(--part-color) 34%, var(--surface-3)); }
-  #phone[data-theme="colorful"] .ex-hero .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
+  #phone[data-theme="colorful"] .ex-hero .ic{ color:#000000; }
+  #phone[data-theme="colorful"] .ex-hero .name{ color:#000000; }
   #phone[data-theme="colorful"] .ex-hero .part{ color: var(--text-dim); font-weight:700; }
   #phone[data-theme="colorful"] .day-ex-block{ border-width:2px; border-color: var(--part-color); }
   #phone[data-theme="colorful"] .day-ex-block .ic-wrap{ background: color-mix(in srgb, var(--part-color) 26%, var(--surface-3)); }
-  #phone[data-theme="colorful"] .day-ex-block .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
+  #phone[data-theme="colorful"] .day-ex-block .ic{ color:#000000; }
+  #phone[data-theme="colorful"] .day-ex-block .name{ color:#000000; }
   #phone[data-theme="colorful"] .primary-btn{ background: color-mix(in srgb, var(--part-color) 85%, black); }
   #phone[data-theme="colorful"] .cal-cell.has-log{ background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
   #phone[data-theme="colorful"] .cal-cell.has-log .plate-dot{ background: var(--accent); }
   #phone[data-theme="colorful"] .cal-cell{ border:1px solid var(--line); }
+  #phone[data-theme="colorful"] .recent-item .ic{ color:#000000; }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:#0A0A0D;height:100%;}
   body{
