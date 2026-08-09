@@ -43,6 +43,7 @@
   #phone[data-theme="light"] #fab,
   #phone[data-theme="light"] .toast,
   #phone[data-theme="light"] .save-mini,
+  #phone[data-theme="light"] .timer-ctrl-btn.start,
   #phone[data-theme="light"] #session-bar .count{ color:#FFFFFF; }
   #phone[data-theme="light"] .kp-key.confirm{ color:#FFFFFF; }
   #phone[data-theme="light"] .cal-cell{ border:1px solid var(--line); }
@@ -54,10 +55,16 @@
   #phone[data-theme="light"] .ex-hero .ic,
   #phone[data-theme="light"] .day-ex-block .ic,
   #phone[data-theme="light"] .recent-item .ic{ color:#000000; }
+  #phone[data-theme="light"] .cal-cell:not(.today) .d{ color:#000000; }
+  #phone[data-theme="light"] #theme-sheet h2,
+  #phone[data-theme="light"] .theme-opt .info .t-name{ color:#000000; }
   #phone[data-theme="light"] .tile .label,
   #phone[data-theme="light"] .ex-tile .name,
   #phone[data-theme="light"] .ex-hero .name,
   #phone[data-theme="light"] .day-ex-block .name{ color:#000000; }
+  #phone[data-theme="light"] .day-set-row .tap-val{ color:#000000; }
+  #phone[data-theme="light"] .quiz-opt .label,
+  #phone[data-theme="light"] .quiz-entry .txt .title{ color:#000000; }
 
   /* ---------- Theme: Colorful ---------- */
   #phone[data-theme="colorful"]{
@@ -76,6 +83,7 @@
   #phone[data-theme="colorful"] #fab,
   #phone[data-theme="colorful"] .toast,
   #phone[data-theme="colorful"] .save-mini,
+  #phone[data-theme="colorful"] .timer-ctrl-btn.start,
   #phone[data-theme="colorful"] .kp-key.confirm{ color:#20140E; }
   #phone[data-theme="colorful"] h1, #phone[data-theme="colorful"] .month-label,
   #phone[data-theme="colorful"] .subview-title{ letter-spacing:0.02em; }
@@ -113,11 +121,17 @@
   #phone[data-theme="colorful"] .day-ex-block .ic-wrap{ background: color-mix(in srgb, var(--part-color) 26%, var(--surface-3)); }
   #phone[data-theme="colorful"] .day-ex-block .ic{ color:#000000; }
   #phone[data-theme="colorful"] .day-ex-block .name{ color:#000000; }
+  #phone[data-theme="colorful"] .day-set-row .tap-val{ color:#000000; }
+  #phone[data-theme="colorful"] .quiz-opt .label,
+  #phone[data-theme="colorful"] .quiz-entry .txt .title{ color:#000000; }
   #phone[data-theme="colorful"] .primary-btn{ background: color-mix(in srgb, var(--part-color) 85%, black); }
   #phone[data-theme="colorful"] .cal-cell.has-log{ background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
   #phone[data-theme="colorful"] .cal-cell.has-log .plate-dot{ background: var(--accent); }
   #phone[data-theme="colorful"] .cal-cell{ border:1px solid var(--line); }
   #phone[data-theme="colorful"] .recent-item .ic{ color:#000000; }
+  #phone[data-theme="colorful"] .cal-cell:not(.today) .d{ color:#000000; }
+  #phone[data-theme="colorful"] #theme-sheet h2,
+  #phone[data-theme="colorful"] .theme-opt .info .t-name{ color:#000000; }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:#0A0A0D;height:100%;}
   body{
@@ -260,6 +274,34 @@
   .ex-tile .equip{font-size:10.5px; color:var(--text-dim); font-weight:600; letter-spacing:0.03em;}
   .ex-tile .chev{color:var(--text-dim);}
 
+  .quiz-entry{
+    display:flex; align-items:center; gap:14px;
+    background:linear-gradient(135deg, var(--surface-2), var(--surface));
+    border:1.5px dashed var(--accent); border-radius:18px;
+    padding:16px; margin-bottom:18px; cursor:pointer;
+  }
+  .quiz-entry:active{background:var(--surface-2); transform:scale(0.99);}
+  .quiz-entry .ic-wrap{
+    width:46px;height:46px;border-radius:12px;background:var(--surface-3);
+    display:flex;align-items:center;justify-content:center; flex-shrink:0; color:var(--accent);
+  }
+  .quiz-entry .ic-wrap svg{width:24px;height:24px;}
+  .quiz-entry .txt .title{font-size:15px; font-weight:800; color:var(--text);}
+  .quiz-entry .txt .sub{font-size:12px; color:var(--text-dim); margin-top:2px;}
+  .quiz-entry .chev{margin-left:auto; color:var(--text-dim); flex-shrink:0;}
+
+  .quiz-progress{font-size:12px; color:var(--text-dim); font-weight:700; margin-bottom:4px;}
+  .quiz-opt{
+    display:flex; align-items:center; gap:12px;
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    padding:16px 14px; margin-bottom:10px; cursor:pointer;
+  }
+  .quiz-opt:active{background:var(--surface-2); transform:scale(0.99);}
+  .quiz-opt .ic{width:26px;height:26px; flex-shrink:0;}
+  .quiz-opt .label{font-size:15px; font-weight:700; color:var(--text); flex:1;}
+  .quiz-opt .chev{color:var(--text-dim); flex-shrink:0;}
+  .quiz-candidate-count{font-size:12px; color:var(--text-dim); margin:-8px 0 16px; font-weight:600;}
+
   /* ---------- Back / top row for sub views ---------- */
   .subview-top{display:flex; align-items:center; gap:12px; margin:4px 0 4px;}
   .subview-top .crumb{font-size:12px; color:var(--text-dim); font-weight:600;}
@@ -360,20 +402,21 @@
   #fab svg{width:26px;height:26px;}
 
   /* ---------- Keypad modal ---------- */
-  #keypad-overlay, #addex-overlay, #theme-overlay{
+  #keypad-overlay, #addex-overlay, #theme-overlay, #timer-overlay{
     position:absolute; inset:0; background:rgba(8,8,10,0.72);
     display:none; align-items:flex-end; z-index:100;
     backdrop-filter:blur(2px);
   }
-  #keypad-overlay.show, #addex-overlay.show, #theme-overlay.show{display:flex;}
-  #keypad-sheet, #addex-sheet, #theme-sheet{
+  #keypad-overlay{ z-index:110; }
+  #keypad-overlay.show, #addex-overlay.show, #theme-overlay.show, #timer-overlay.show{display:flex;}
+  #keypad-sheet, #addex-sheet, #theme-sheet, #timer-sheet{
     width:100%; background:var(--surface); border-radius:26px 26px 0 0;
     padding:20px 20px calc(20px + var(--safe-bottom));
     border-top:1px solid var(--line);
     animation:slideup 0.18s ease-out;
     max-height:82%; overflow-y:auto;
   }
-  #addex-sheet h2{font-family:'Bebas Neue',sans-serif; font-size:22px; margin:0 0 16px; letter-spacing:0.03em;}
+  #addex-sheet h2, #day-sheet h2, #theme-sheet h2, #timer-sheet h2{font-family:'Bebas Neue',sans-serif; font-size:22px; margin:0 0 16px; letter-spacing:0.03em; color:var(--text);}
   .field-label{font-size:12px; color:var(--text-dim); font-weight:700; letter-spacing:0.05em; text-transform:uppercase; margin:0 2px 8px;}
   .text-input{
     width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
@@ -410,9 +453,29 @@
     border:1px solid var(--line);
   }
   .theme-opt .swatch div:first-child{grid-column:1/3;}
-  .theme-opt .info .t-name{font-size:15px; font-weight:800;}
+  .theme-opt .info .t-name{font-size:15px; font-weight:800; color:var(--text);}
   .theme-opt .info .t-desc{font-size:12px; color:var(--text-dim); margin-top:2px; line-height:1.5;}
   .theme-opt .check{margin-left:auto; color:var(--accent); flex-shrink:0;}
+
+  .timer-display{
+    font-family:'Bebas Neue',sans-serif; font-size:60px; text-align:center;
+    margin:8px 0 18px; color:var(--accent-2); letter-spacing:0.03em;
+    font-variant-numeric:tabular-nums;
+  }
+  .timer-display.running{ color:var(--accent); }
+  .timer-set-row{display:flex; gap:10px; margin-bottom:22px;}
+  .timer-controls{display:flex; justify-content:center; gap:22px;}
+  .timer-ctrl-col{display:flex; flex-direction:column; align-items:center; gap:8px;}
+  .timer-ctrl-btn{
+    width:58px;height:58px;border-radius:50%; border:1px solid var(--line); cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2); color:var(--text);
+  }
+  .timer-ctrl-btn svg{width:24px;height:24px;}
+  .timer-ctrl-btn:active{transform:scale(0.94);}
+  .timer-ctrl-btn.start{background:var(--accent); border-color:var(--accent); color:#1a0d08;}
+  .timer-ctrl-btn.disabled{opacity:0.35; pointer-events:none;}
+  .timer-ctrl-label{font-size:11.5px; color:var(--text-dim); font-weight:700;}
   @keyframes slideup{from{transform:translateY(30px); opacity:0.4;} to{transform:translateY(0); opacity:1;}}
   #keypad-sheet .kp-label{font-size:12px; color:var(--text-dim); font-weight:700; text-align:center; letter-spacing:0.06em;}
   #keypad-sheet .kp-display{
@@ -451,16 +514,31 @@
     animation:slideup 0.18s ease-out;
   }
   #day-sheet .handle{width:36px;height:4px;border-radius:2px;background:var(--line); margin:0 auto 16px;}
-  #day-sheet h2{font-family:'Bebas Neue',sans-serif; font-size:24px; margin:0 0 16px; letter-spacing:0.03em;}
   .day-ex-block{background:var(--surface-2); border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px;}
   .day-ex-block .hd{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
   .day-ex-block .ic-wrap{width:36px;height:36px;border-radius:10px;background:var(--surface-3); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
   .day-ex-block .ic{width:20px;height:20px;}
-  .day-ex-block .name{font-size:14.5px; font-weight:700; flex:1;}
+  .day-ex-block .name-wrap{flex:1; min-width:0;}
+  .day-ex-block .name{font-size:14.5px; font-weight:700; color:var(--text);}
+  .day-ex-block .part-tag{font-size:10.5px; font-weight:700; color:var(--text-dim); margin-top:2px;}
   .day-ex-block .del{color:var(--text-dim); cursor:pointer; padding:4px;}
   .reorder-btns{display:flex; align-items:center; gap:2px; flex-shrink:0;}
   .reorder-btn{color:var(--text-dim); cursor:pointer; padding:4px;}
   .reorder-btn.disabled{opacity:0.25; pointer-events:none;}
+  .day-set-row{display:flex; align-items:center; gap:8px; padding:6px 0;}
+  .day-set-row .idx{
+    width:20px;height:20px;border-radius:50%; background:var(--surface-3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10.5px; font-weight:700; color:var(--text-dim); flex-shrink:0;
+  }
+  .day-set-row .vals{flex:1; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-family:'DM Mono',monospace; font-size:13.5px;}
+  .day-set-row .tap-val{
+    background:var(--surface-3); border-radius:8px; padding:5px 9px; color:var(--text);
+    font-weight:700; cursor:pointer; border:1px solid transparent;
+  }
+  .day-set-row .tap-val:active{border-color:var(--accent);}
+  .day-set-row .x-sep{color:var(--text-dim); font-weight:700; font-size:13px;}
+  .day-set-row .del-set{color:var(--text-dim); cursor:pointer; padding:4px; flex-shrink:0;}
   .day-sets-line{font-family:'DM Mono',monospace; font-size:13px; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:6px;}
   .day-sets-line span{background:var(--surface-3); border-radius:8px; padding:4px 8px; color:var(--text);}
   .chip-values{font-family:'DM Mono',monospace; font-size:13.5px; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:6px;}
@@ -486,6 +564,9 @@
     <div style="display:flex; gap:8px;">
       <div class="icon-btn" id="theme-btn" title="配色を変更">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c2.3 0 4.2-1.9 4.2-4.2C21.5 6.3 17.2 2 12 2z"/><circle cx="7" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>
+      </div>
+      <div class="icon-btn" id="timer-btn" title="タイマー">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 3h6"/><path d="M18.5 5.5l1.2-1.2"/></svg>
       </div>
       <div class="icon-btn" id="today-btn" title="今日へ">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2" fill="currentColor" stroke="none"/></svg>
@@ -524,6 +605,10 @@
 
   <div id="theme-overlay">
     <div id="theme-sheet"></div>
+  </div>
+
+  <div id="timer-overlay">
+    <div id="timer-sheet"></div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -611,6 +696,15 @@ const ICONS = {
     <path d="M14 24 H19 L22 17 L27 31 L30 24 H34"/>
   </svg>`,
   reorder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg>`,
+  play: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>`,
+  pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="5" width="4.5" height="14" rx="1.2"/><rect x="13.5" y="5" width="4.5" height="14" rx="1.2"/></svg>`,
+  restart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3.5-7.1"/><path d="M3 3.5V8h4.5"/></svg>`,
+  quiz: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10.5" cy="10.5" r="6.5"/>
+    <path d="M8.3 8.6a2.2 2.2 0 1 1 3 2.1c-.8.35-1.3 1-1.3 1.75"/>
+    <circle cx="10" cy="14" r="0.4" fill="currentColor" stroke="none"/>
+    <path d="M20 20l-4.3-4.3"/>
+  </svg>`,
   palette: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c2.3 0 4.2-1.9 4.2-4.2C21.5 6.3 17.2 2 12 2z"/><circle cx="7" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>`,
 };
 
@@ -632,78 +726,94 @@ const DEFAULT_FIELDS = [
 ];
 function getExerciseFields(ex){ return ex.fields || DEFAULT_FIELDS; }
 
+/* Labels for the "質問形式で種目を探す" questionnaire feature */
+const QUIZ_EQUIP_LABELS = {
+  barbell:'バーベル', dumbbell:'ダンベル', cable:'マシン・ケーブル',
+  bodyweight:'自重', cardio:'有酸素マシン', custom:'その他の器具',
+};
+const QUIZ_MOVEMENT_LABELS = {
+  push:'プッシュ系（押す動作）', pull:'プル系（引く動作）', hinge:'ヒンジ系（股関節を折る）',
+  squat:'スクワット系（しゃがむ）', isolation:'アイソレーション（単関節を動かす）',
+  core:'体幹・コア系', cardio:'有酸素運動',
+};
+const QUIZ_POSTURE_LABELS = {
+  standing:'立って行う', seated:'座って行う', lying:'寝て行う', other:'その他の姿勢',
+};
+const QUIZ_STEP_LABELS = { bodypart:'部位', equip:'器具', movement:'動き', posture:'姿勢' };
+const QUIZ_STEPS = ['bodypart','equip','movement','posture'];
+
 const EXERCISES = {
   chest: [
-    { id:'bench_press', name:'ベンチプレス', equip:'barbell', equipLabel:'バーベル' },
-    { id:'incline_bench', name:'インクラインベンチプレス', equip:'barbell', equipLabel:'バーベル' },
-    { id:'db_press', name:'ダンベルプレス', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'db_fly', name:'ダンベルフライ', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'cable_crossover', name:'ケーブルクロスオーバー', equip:'cable', equipLabel:'ケーブル' },
+    { id:'bench_press', name:'ベンチプレス', equip:'barbell', equipLabel:'バーベル', movement:'push', posture:'lying' },
+    { id:'incline_bench', name:'インクラインベンチプレス', equip:'barbell', equipLabel:'バーベル', movement:'push', posture:'lying' },
+    { id:'db_press', name:'ダンベルプレス', equip:'dumbbell', equipLabel:'ダンベル', movement:'push', posture:'lying' },
+    { id:'db_fly', name:'ダンベルフライ', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'lying' },
+    { id:'cable_crossover', name:'ケーブルクロスオーバー', equip:'cable', equipLabel:'ケーブル', movement:'isolation', posture:'standing' },
   ],
   back: [
-    { id:'deadlift', name:'デッドリフト', equip:'barbell', equipLabel:'バーベル' },
-    { id:'bent_row', name:'ベントオーバーロウ', equip:'barbell', equipLabel:'バーベル' },
-    { id:'pullup', name:'懸垂（プルアップ）', equip:'bodyweight', equipLabel:'自重' },
-    { id:'lat_pulldown', name:'ラットプルダウン', equip:'cable', equipLabel:'ケーブル' },
-    { id:'db_row', name:'ダンベルロウ', equip:'dumbbell', equipLabel:'ダンベル' },
+    { id:'deadlift', name:'デッドリフト', equip:'barbell', equipLabel:'バーベル', movement:'hinge', posture:'standing' },
+    { id:'bent_row', name:'ベントオーバーロウ', equip:'barbell', equipLabel:'バーベル', movement:'pull', posture:'standing' },
+    { id:'pullup', name:'懸垂（プルアップ）', equip:'bodyweight', equipLabel:'自重', movement:'pull', posture:'other' },
+    { id:'lat_pulldown', name:'ラットプルダウン', equip:'cable', equipLabel:'ケーブル', movement:'pull', posture:'seated' },
+    { id:'db_row', name:'ダンベルロウ', equip:'dumbbell', equipLabel:'ダンベル', movement:'pull', posture:'standing' },
   ],
   legs: [
-    { id:'squat', name:'スクワット', equip:'barbell', equipLabel:'バーベル' },
-    { id:'romanian_deadlift', name:'ルーマニアンデッドリフト', equip:'barbell', equipLabel:'バーベル' },
-    { id:'leg_press', name:'レッグプレス', equip:'cable', equipLabel:'マシン' },
-    { id:'leg_extension', name:'レッグエクステンション', equip:'cable', equipLabel:'マシン' },
-    { id:'leg_curl', name:'レッグカール', equip:'cable', equipLabel:'マシン' },
-    { id:'calf_raise', name:'カーフレイズ', equip:'cable', equipLabel:'マシン' },
-    { id:'lunge', name:'ランジ', equip:'dumbbell', equipLabel:'ダンベル' },
+    { id:'squat', name:'スクワット', equip:'barbell', equipLabel:'バーベル', movement:'squat', posture:'standing' },
+    { id:'romanian_deadlift', name:'ルーマニアンデッドリフト', equip:'barbell', equipLabel:'バーベル', movement:'hinge', posture:'standing' },
+    { id:'leg_press', name:'レッグプレス', equip:'cable', equipLabel:'マシン', movement:'squat', posture:'seated' },
+    { id:'leg_extension', name:'レッグエクステンション', equip:'cable', equipLabel:'マシン', movement:'isolation', posture:'seated' },
+    { id:'leg_curl', name:'レッグカール', equip:'cable', equipLabel:'マシン', movement:'isolation', posture:'seated' },
+    { id:'calf_raise', name:'カーフレイズ', equip:'cable', equipLabel:'マシン', movement:'isolation', posture:'standing' },
+    { id:'lunge', name:'ランジ', equip:'dumbbell', equipLabel:'ダンベル', movement:'squat', posture:'standing' },
   ],
   glutes: [
-    { id:'hip_thrust', name:'ヒップスラスト', equip:'barbell', equipLabel:'バーベル' },
-    { id:'glute_bridge', name:'グルートブリッジ', equip:'bodyweight', equipLabel:'自重' },
-    { id:'bulgarian_squat', name:'ブルガリアンスクワット', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'cable_kickback_glute', name:'ケーブルキックバック', equip:'cable', equipLabel:'ケーブル' },
-    { id:'step_up', name:'ステップアップ', equip:'dumbbell', equipLabel:'ダンベル' },
+    { id:'hip_thrust', name:'ヒップスラスト', equip:'barbell', equipLabel:'バーベル', movement:'hinge', posture:'other' },
+    { id:'glute_bridge', name:'グルートブリッジ', equip:'bodyweight', equipLabel:'自重', movement:'hinge', posture:'lying' },
+    { id:'bulgarian_squat', name:'ブルガリアンスクワット', equip:'dumbbell', equipLabel:'ダンベル', movement:'squat', posture:'standing' },
+    { id:'cable_kickback_glute', name:'ケーブルキックバック', equip:'cable', equipLabel:'ケーブル', movement:'isolation', posture:'standing' },
+    { id:'step_up', name:'ステップアップ', equip:'dumbbell', equipLabel:'ダンベル', movement:'squat', posture:'standing' },
   ],
   shoulders: [
-    { id:'shoulder_press', name:'ショルダープレス', equip:'barbell', equipLabel:'バーベル' },
-    { id:'side_raise', name:'サイドレイズ', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'front_raise', name:'フロントレイズ', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'upright_row', name:'アップライトロウ', equip:'barbell', equipLabel:'バーベル' },
-    { id:'rear_raise', name:'リアレイズ', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'arnold_press', name:'アーノルドプレス', equip:'dumbbell', equipLabel:'ダンベル' },
+    { id:'shoulder_press', name:'ショルダープレス', equip:'barbell', equipLabel:'バーベル', movement:'push', posture:'standing' },
+    { id:'side_raise', name:'サイドレイズ', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'standing' },
+    { id:'front_raise', name:'フロントレイズ', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'standing' },
+    { id:'upright_row', name:'アップライトロウ', equip:'barbell', equipLabel:'バーベル', movement:'pull', posture:'standing' },
+    { id:'rear_raise', name:'リアレイズ', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'other' },
+    { id:'arnold_press', name:'アーノルドプレス', equip:'dumbbell', equipLabel:'ダンベル', movement:'push', posture:'seated' },
   ],
   arms: [
-    { id:'barbell_curl', name:'バーベルカール', equip:'barbell', equipLabel:'バーベル' },
-    { id:'db_curl', name:'ダンベルカール', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'hammer_curl', name:'ハンマーカール', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'triceps_ext', name:'トライセプスエクステンション', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'french_press', name:'フレンチプレス', equip:'dumbbell', equipLabel:'ダンベル' },
-    { id:'cable_pushdown', name:'ケーブルプッシュダウン', equip:'cable', equipLabel:'ケーブル' },
-    { id:'cable_pressdown', name:'ケーブルプレスダウン', equip:'cable', equipLabel:'ケーブル' },
-    { id:'kickback', name:'キックバック', equip:'dumbbell', equipLabel:'ダンベル' },
+    { id:'barbell_curl', name:'バーベルカール', equip:'barbell', equipLabel:'バーベル', movement:'isolation', posture:'standing' },
+    { id:'db_curl', name:'ダンベルカール', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'standing' },
+    { id:'hammer_curl', name:'ハンマーカール', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'standing' },
+    { id:'triceps_ext', name:'トライセプスエクステンション', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'other' },
+    { id:'french_press', name:'フレンチプレス', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'lying' },
+    { id:'cable_pushdown', name:'ケーブルプッシュダウン', equip:'cable', equipLabel:'ケーブル', movement:'isolation', posture:'standing' },
+    { id:'cable_pressdown', name:'ケーブルプレスダウン', equip:'cable', equipLabel:'ケーブル', movement:'isolation', posture:'standing' },
+    { id:'kickback', name:'キックバック', equip:'dumbbell', equipLabel:'ダンベル', movement:'isolation', posture:'other' },
   ],
   abs: [
-    { id:'crunch', name:'クランチ', equip:'bodyweight', equipLabel:'自重' },
-    { id:'leg_raise', name:'レッグレイズ', equip:'bodyweight', equipLabel:'自重' },
-    { id:'plank', name:'プランク', equip:'bodyweight', equipLabel:'自重' },
-    { id:'cable_crunch', name:'ケーブルクランチ', equip:'cable', equipLabel:'ケーブル' },
-    { id:'russian_twist', name:'ロシアンツイスト', equip:'dumbbell', equipLabel:'ダンベル' },
+    { id:'crunch', name:'クランチ', equip:'bodyweight', equipLabel:'自重', movement:'core', posture:'lying' },
+    { id:'leg_raise', name:'レッグレイズ', equip:'bodyweight', equipLabel:'自重', movement:'core', posture:'lying' },
+    { id:'plank', name:'プランク', equip:'bodyweight', equipLabel:'自重', movement:'core', posture:'other' },
+    { id:'cable_crunch', name:'ケーブルクランチ', equip:'cable', equipLabel:'ケーブル', movement:'core', posture:'other' },
+    { id:'russian_twist', name:'ロシアンツイスト', equip:'dumbbell', equipLabel:'ダンベル', movement:'core', posture:'seated' },
   ],
   aerobic: [
-    { id:'treadmill', name:'トレッドミル', equip:'cardio', equipLabel:'有酸素',
+    { id:'treadmill', name:'トレッドミル', equip:'cardio', equipLabel:'有酸素', movement:'cardio', posture:'standing',
       fields:[
         { key:'time', label:'時間', unit:'min', decimal:false },
         { key:'speed', label:'速度', unit:'km/h', decimal:true },
         { key:'incline', label:'傾斜', unit:'%', decimal:true },
       ]
     },
-    { id:'aero_bike', name:'エアロバイク', equip:'cardio', equipLabel:'有酸素',
+    { id:'aero_bike', name:'エアロバイク', equip:'cardio', equipLabel:'有酸素', movement:'cardio', posture:'seated',
       fields:[
         { key:'time', label:'時間', unit:'min', decimal:false },
         { key:'level', label:'負荷レベル', unit:'', decimal:false },
         { key:'cadence', label:'ケイデンス', unit:'rpm', decimal:false },
       ]
     },
-    { id:'cross_trainer', name:'クロストレーナー', equip:'cardio', equipLabel:'有酸素',
+    { id:'cross_trainer', name:'クロストレーナー', equip:'cardio', equipLabel:'有酸素', movement:'cardio', posture:'standing',
       fields:[
         { key:'time', label:'時間', unit:'min', decimal:false },
         { key:'level', label:'負荷レベル', unit:'', decimal:false },
@@ -925,6 +1035,16 @@ function renderBodyPartSelect(){
       <div class="crumb">今日のトレーニング</div>
     </div>
     <div class="subview-title">部位を選択</div>
+    <div class="quiz-entry" id="quiz-entry-btn">
+      <div class="ic-wrap">${ICONS.quiz}</div>
+      <div class="txt">
+        <div class="title">質問形式で種目を探す</div>
+        <div class="sub">部位・器具・動き・姿勢から診断</div>
+      </div>
+      <div class="chev">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
     <div class="grid-2">
       ${BODY_PARTS.map(bp => `
         <div class="tile" data-id="${bp.id}" style="--part-color:${bp.color};">
@@ -935,6 +1055,7 @@ function renderBodyPartSelect(){
       `).join('')}
     </div>
   `;
+  document.getElementById('quiz-entry-btn').onclick = startQuiz;
   document.getElementById('back-btn').onclick = ()=>{
     if(state.session.length){ backToCalendarConfirmIfNeeded(); } else { state.view='calendar'; render(); }
   };
@@ -1005,6 +1126,9 @@ function renderExerciseSelect(){
 let pendingSet = {};
 
 function setValueChips(fields, s){
+  if(fields.length===2 && fields[0].key==='weight' && fields[1].key==='reps'){
+    return `<span>${s.weight}kg × ${s.reps}reps</span>`;
+  }
   return fields.map(f => `<span>${s[f.key]}${f.unit?f.unit:''}</span>`).join('');
 }
 
@@ -1171,12 +1295,205 @@ function renderSessionReview(){
   if(saveBtn) saveBtn.onclick = saveSession;
 }
 
+/* ============================= EXERCISE FINDER (QUESTIONNAIRE) ============================= */
+
+let quizState = null;
+
+function allSearchableExercises(){
+  const list = [];
+  for(const bp of BODY_PARTS){
+    getExercisesForBodyPart(bp.id).forEach(ex=>{
+      list.push(Object.assign({}, ex, { bodyPartId: bp.id, bodyPartLabel: bp.label }));
+    });
+  }
+  return list;
+}
+
+function quizCandidates(){
+  let list = allSearchableExercises();
+  if(quizState.bodypart) list = list.filter(e=>e.bodyPartId===quizState.bodypart);
+  if(quizState.equip) list = list.filter(e=>e.equip===quizState.equip);
+  if(quizState.movement) list = list.filter(e=>(e.movement||'isolation')===quizState.movement);
+  if(quizState.posture) list = list.filter(e=>(e.posture||'other')===quizState.posture);
+  return list;
+}
+
+function startQuiz(){
+  quizState = { bodypart:null, equip:null, movement:null, posture:null };
+  state.view = 'quiz';
+  render();
+}
+
+function quizGoBackOneStep(){
+  const answered = QUIZ_STEPS.filter(s=>quizState[s]);
+  if(answered.length===0){ quizState=null; state.view='bodypart'; render(); return; }
+  quizState[answered[answered.length-1]] = null;
+  render();
+}
+
+function quizOptionsFor(step, candidates){
+  if(step==='bodypart'){
+    const ids = [...new Set(candidates.map(e=>e.bodyPartId))];
+    return ids.map(id=>{
+      const bp = BODY_PARTS.find(b=>b.id===id);
+      return { value:id, label:bp.label, icon:bp.icon };
+    });
+  }
+  if(step==='equip'){
+    const ids = [...new Set(candidates.map(e=>e.equip))];
+    return ids.map(id=>({ value:id, label:QUIZ_EQUIP_LABELS[id]||id, icon:id }));
+  }
+  if(step==='movement'){
+    const ids = [...new Set(candidates.map(e=>e.movement||'isolation'))];
+    return ids.map(id=>({ value:id, label:QUIZ_MOVEMENT_LABELS[id]||id, icon:null }));
+  }
+  if(step==='posture'){
+    const ids = [...new Set(candidates.map(e=>e.posture||'other'))];
+    return ids.map(id=>({ value:id, label:QUIZ_POSTURE_LABELS[id]||id, icon:null }));
+  }
+  return [];
+}
+
+function useQuizResult(ex){
+  state.bodyPart = BODY_PARTS.find(b=>b.id===ex.bodyPartId);
+  state.exercise = ex;
+  state.currentSets = [];
+  quizState = null;
+  state.view = 'sets';
+  render();
+  showToast(ex.name + ' を選びました');
+}
+
+function renderQuiz(){
+  document.getElementById('fab-group').style.display = 'none';
+  const candidates = quizCandidates();
+  const nextStep = QUIZ_STEPS.find(s => !quizState[s]);
+
+  // No more questions to ask, or already narrowed to 0/1 candidates → show result
+  if(!nextStep || candidates.length<=1){
+    return renderQuizResult(candidates);
+  }
+
+  const options = quizOptionsFor(nextStep, candidates);
+
+  // Only one possible answer for this question — skip straight past it
+  if(options.length===1){
+    quizState[nextStep] = options[0].value;
+    return renderQuiz();
+  }
+
+  const stepIndex = QUIZ_STEPS.indexOf(nextStep) + 1;
+
+  $view.innerHTML = `
+    <div class="subview-top">
+      <div class="icon-btn" id="quiz-back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="crumb">質問 ${stepIndex}/4</div>
+    </div>
+    <div class="subview-title">${QUIZ_STEP_LABELS[nextStep]}を選んでください</div>
+    <div class="quiz-candidate-count">現在 ${candidates.length} 件の候補</div>
+    ${options.map(o => `
+      <div class="quiz-opt" data-value="${o.value}">
+        ${o.icon ? icon(o.icon,'ic') : ''}
+        <div class="label">${o.label}</div>
+        <div class="chev">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+    `).join('')}
+  `;
+  document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
+  $view.querySelectorAll('.quiz-opt[data-value]').forEach(el=>{
+    el.onclick = ()=>{ quizState[nextStep] = el.dataset.value; render(); };
+  });
+}
+
+function renderQuizResult(candidates){
+  document.getElementById('fab-group').style.display = 'none';
+
+  if(candidates.length===0){
+    $view.innerHTML = `
+      <div class="subview-top">
+        <div class="icon-btn" id="quiz-back-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        <div class="crumb">診断結果</div>
+      </div>
+      <div class="subview-title">見つかりませんでした</div>
+      <div class="empty-hint">条件に合う種目が見つかりませんでした。<br>ひとつ前の質問に戻るか、最初からやり直してください。</div>
+      <button class="ghost-btn" id="quiz-retry-btn">最初からやり直す</button>
+    `;
+    document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
+    document.getElementById('quiz-retry-btn').onclick = startQuiz;
+    return;
+  }
+
+  if(candidates.length===1){
+    const ex = candidates[0];
+    const fields = getExerciseFields(ex);
+    $view.innerHTML = `
+      <div class="subview-top">
+        <div class="icon-btn" id="quiz-back-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        <div class="crumb">診断結果</div>
+      </div>
+      <div class="subview-title">この種目です</div>
+      <div class="ex-hero" style="--part-color:${BODY_PARTS.find(b=>b.id===ex.bodyPartId)?.color || 'var(--accent)'};">
+        <div class="ic-wrap">${icon(ex.equip,'ic')}</div>
+        <div>
+          <div class="name">${ex.name}</div>
+          <div class="part">${ex.bodyPartLabel} ・ ${ex.equipLabel}</div>
+        </div>
+      </div>
+      <button class="primary-btn" id="quiz-use-btn">この種目を記録する</button>
+      <button class="ghost-btn" id="quiz-retry-btn">もう一度診断する</button>
+    `;
+    document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
+    document.getElementById('quiz-use-btn').onclick = ()=>useQuizResult(ex);
+    document.getElementById('quiz-retry-btn').onclick = startQuiz;
+    return;
+  }
+
+  // Still tied between a few candidates — let the person pick directly
+  $view.innerHTML = `
+    <div class="subview-top">
+      <div class="icon-btn" id="quiz-back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </div>
+      <div class="crumb">診断結果</div>
+    </div>
+    <div class="subview-title">候補が${candidates.length}件あります</div>
+    ${candidates.map(ex => `
+      <div class="ex-tile" data-id="${ex.id}">
+        <div class="ic-wrap">${icon(ex.equip,'ic')}</div>
+        <div>
+          <div class="name">${ex.name}</div>
+          <div class="equip">${ex.bodyPartLabel} ・ ${ex.equipLabel}</div>
+        </div>
+        <div style="flex:1"></div>
+        <div class="chev">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+    `).join('')}
+  `;
+  document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
+  $view.querySelectorAll('.ex-tile[data-id]').forEach(el=>{
+    el.onclick = ()=>{
+      const ex = candidates.find(c=>c.id===el.dataset.id);
+      useQuizResult(ex);
+    };
+  });
+}
+
 const $kpOverlay = document.getElementById('keypad-overlay');
 const $kpSheet = document.getElementById('keypad-sheet');
 let kpState = null;
 
-function openKeypad({label, unit, decimal, initial, onConfirm}){
-  kpState = { value: initial!==null && initial!==undefined ? String(initial) : '', decimal, onConfirm, unit };
+function openKeypad({label, unit, decimal, initial, onConfirm, allowZero}){
+  kpState = { value: initial!==null && initial!==undefined ? String(initial) : '', decimal, onConfirm, unit, allowZero: !!allowZero };
   renderKeypad(label, unit);
   $kpOverlay.classList.add('show');
 }
@@ -1228,7 +1545,8 @@ function renderKeypad(label, unit){
   });
   document.getElementById('kp-confirm').onclick = ()=>{
     const num = parseFloat(kpState.value);
-    if(isNaN(num) || num <= 0){ showToast('数値を入力してください'); return; }
+    const invalid = isNaN(num) || num < 0 || (num === 0 && !kpState.allowZero);
+    if(invalid){ showToast('数値を入力してください'); return; }
     const cb = kpState.onConfirm;
     closeKeypad();
     cb(num);
@@ -1303,6 +1621,8 @@ function openAddExerciseModal(bp){
       equip: selectedEquip.equip,
       equipLabel,
       custom: true,
+      movement: 'isolation',
+      posture: 'other',
     };
     if(!state.customExercises[bp.id]) state.customExercises[bp.id] = [];
     state.customExercises[bp.id].push(newEx);
@@ -1385,6 +1705,118 @@ function closeThemeModal(){ $themeOverlay.classList.remove('show'); }
 $themeOverlay.addEventListener('click', (e)=>{ if(e.target===$themeOverlay) closeThemeModal(); });
 document.getElementById('theme-btn').onclick = openThemeModal;
 
+/* ============================= TIMER (STOPWATCH) ============================= */
+
+const $timerOverlay = document.getElementById('timer-overlay');
+const $timerSheet = document.getElementById('timer-sheet');
+
+const timerState = {
+  minutes: 5,
+  seconds: 0,
+  remaining: 5 * 60,   // seconds left, counts down
+  running: false,
+  intervalId: null,
+};
+
+function formatMMSS(totalSeconds){
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function tickTimer(){
+  if(timerState.remaining <= 0){
+    stopTimer();
+    showToast('タイマー終了');
+    if(navigator.vibrate) navigator.vibrate([200,100,200]);
+    renderTimerModal();
+    return;
+  }
+  timerState.remaining -= 1;
+  renderTimerModal();
+}
+
+function startTimer(){
+  if(timerState.running) return;
+  if(timerState.remaining <= 0){
+    timerState.remaining = timerState.minutes * 60 + timerState.seconds;
+  }
+  timerState.running = true;
+  timerState.intervalId = setInterval(tickTimer, 1000);
+  renderTimerModal();
+}
+function stopTimer(){
+  timerState.running = false;
+  if(timerState.intervalId){ clearInterval(timerState.intervalId); timerState.intervalId = null; }
+  renderTimerModal();
+}
+function restartTimer(){
+  stopTimer();
+  timerState.remaining = timerState.minutes * 60 + timerState.seconds;
+  renderTimerModal();
+}
+
+function openTimerModal(){
+  $timerOverlay.classList.add('show');
+  renderTimerModal();
+}
+function closeTimerModal(){
+  $timerOverlay.classList.remove('show');
+}
+
+function renderTimerModal(){
+  $timerSheet.innerHTML = `
+    <div class="handle"></div>
+    <h2>タイマー</h2>
+    <div class="timer-display ${timerState.running?'running':''}">${formatMMSS(Math.max(timerState.remaining,0))}</div>
+    <div class="timer-set-row">
+      <div class="input-box ${timerState.running?'disabled':''}" id="timer-min-box" style="${timerState.running?'pointer-events:none;opacity:0.5;':''}">
+        <div class="lbl">分</div>
+        <div class="val">${timerState.minutes}</div>
+      </div>
+      <div class="input-box ${timerState.running?'disabled':''}" id="timer-sec-box" style="${timerState.running?'pointer-events:none;opacity:0.5;':''}">
+        <div class="lbl">秒</div>
+        <div class="val">${timerState.seconds}</div>
+      </div>
+    </div>
+    <div class="timer-controls">
+      <div class="timer-ctrl-col">
+        <div class="timer-ctrl-btn start ${timerState.running?'disabled':''}" id="timer-start-btn">${ICONS.play}</div>
+        <div class="timer-ctrl-label">スタート</div>
+      </div>
+      <div class="timer-ctrl-col">
+        <div class="timer-ctrl-btn ${!timerState.running?'disabled':''}" id="timer-stop-btn">${ICONS.pause}</div>
+        <div class="timer-ctrl-label">ストップ</div>
+      </div>
+      <div class="timer-ctrl-col">
+        <div class="timer-ctrl-btn" id="timer-restart-btn">${ICONS.restart}</div>
+        <div class="timer-ctrl-label">リスタート</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('timer-min-box').onclick = ()=>{
+    if(timerState.running) return;
+    openKeypad({
+      label:'分を入力', unit:'min', decimal:false, initial: timerState.minutes, allowZero:true,
+      onConfirm:(v)=>{ timerState.minutes = Math.round(v); timerState.remaining = timerState.minutes*60 + timerState.seconds; renderTimerModal(); }
+    });
+  };
+  document.getElementById('timer-sec-box').onclick = ()=>{
+    if(timerState.running) return;
+    openKeypad({
+      label:'秒を入力', unit:'', decimal:false, initial: timerState.seconds, allowZero:true,
+      onConfirm:(v)=>{ timerState.seconds = Math.min(Math.round(v),59); timerState.remaining = timerState.minutes*60 + timerState.seconds; renderTimerModal(); }
+    });
+  };
+  document.getElementById('timer-start-btn').onclick = startTimer;
+  document.getElementById('timer-stop-btn').onclick = stopTimer;
+  document.getElementById('timer-restart-btn').onclick = restartTimer;
+}
+
+$timerOverlay.addEventListener('click', (e)=>{ if(e.target===$timerOverlay) closeTimerModal(); });
+document.getElementById('timer-btn').onclick = openTimerModal;
+
 /* ============================= SESSION SAVE ============================= */
 
 async function saveSession(){
@@ -1422,17 +1854,42 @@ function closeDayDetail(){
   $dayOverlay.classList.remove('show');
 }
 
+function renderSetRowHtml(fields, s, ei, si){
+  const isStrength = fields.length===2 && fields[0].key==='weight' && fields[1].key==='reps';
+  let valsHtml;
+  if(isStrength){
+    valsHtml = `<span class="tap-val" data-ei="${ei}" data-si="${si}" data-field="weight">${s.weight}kg</span><span class="x-sep">×</span><span class="tap-val" data-ei="${ei}" data-si="${si}" data-field="reps">${s.reps}reps</span>`;
+  } else {
+    valsHtml = fields.map(f=>`<span class="tap-val" data-ei="${ei}" data-si="${si}" data-field="${f.key}">${s[f.key]}${f.unit}</span>`).join('');
+  }
+  return `
+    <div class="day-set-row">
+      <div class="idx">${si+1}</div>
+      <div class="vals">${valsHtml}</div>
+      <div class="del-set" data-ei="${ei}" data-si="${si}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </div>
+    </div>
+  `;
+}
+
 function renderDayDetail(){
   const date = state.dayDetailDate;
   const entries = state.dayDetailEntries || [];
   $daySheet.innerHTML = `
     <div class="handle"></div>
     <h2>${fmtDate(date)}</h2>
-    ${entries.length ? entries.map((ent,i)=>`
-      <div class="day-ex-block" style="--part-color:${BODY_PARTS.find(b=>b.id===ent.bodyPartId)?.color || 'var(--accent)'};">
+    ${entries.length ? entries.map((ent,i)=>{
+      const fields = ent.fields || DEFAULT_FIELDS;
+      const partColor = BODY_PARTS.find(b=>b.id===ent.bodyPartId)?.color || 'var(--accent)';
+      return `
+      <div class="day-ex-block" style="--part-color:${partColor};">
         <div class="hd">
           <div class="ic-wrap">${icon(ent.equip,'ic')}</div>
-          <div class="name">${ent.name}</div>
+          <div class="name-wrap">
+            <div class="name">${ent.name}</div>
+            <div class="part-tag">${ent.bodyPartLabel || ''}</div>
+          </div>
           <div class="reorder-btns">
             <div class="reorder-btn ${i===0?'disabled':''}" data-act="up" data-i="${i}">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
@@ -1445,21 +1902,29 @@ function renderDayDetail(){
             </div>
           </div>
         </div>
-        <div class="day-sets-line">
-          ${ent.sets.map(s=>setValueChips(ent.fields||DEFAULT_FIELDS, s)).join('')}
-        </div>
+        ${ent.sets.map((s,si)=>renderSetRowHtml(fields, s, i, si)).join('')}
       </div>
-    `).join('') : `<div class="empty-hint">この日の記録はありません</div>`}
+    `;}).join('') : `<div class="empty-hint">この日の記録はありません</div>`}
   `;
-  async function persistOrder(){
-    await saveDayLog(date, state.dayDetailEntries);
+
+  async function persistEntries(){
+    if(state.dayDetailEntries.length){
+      await saveDayLog(date, state.dayDetailEntries);
+    } else {
+      await deleteDayLog(date);
+      const dates = await loadIndex();
+      const idx = dates.indexOf(date);
+      if(idx>-1){ dates.splice(idx,1); await saveIndex(dates); }
+    }
+    await refreshIndexAndRecents();
   }
+
   $daySheet.querySelectorAll('.reorder-btn[data-act="up"]').forEach(el=>{
     el.onclick = async ()=>{
       const i = Number(el.dataset.i);
       if(i<=0) return;
       [state.dayDetailEntries[i-1], state.dayDetailEntries[i]] = [state.dayDetailEntries[i], state.dayDetailEntries[i-1]];
-      await persistOrder();
+      await saveDayLog(date, state.dayDetailEntries);
       renderDayDetail();
     };
   });
@@ -1468,7 +1933,7 @@ function renderDayDetail(){
       const i = Number(el.dataset.i);
       if(i>=state.dayDetailEntries.length-1) return;
       [state.dayDetailEntries[i+1], state.dayDetailEntries[i]] = [state.dayDetailEntries[i], state.dayDetailEntries[i+1]];
-      await persistOrder();
+      await saveDayLog(date, state.dayDetailEntries);
       renderDayDetail();
     };
   });
@@ -1476,15 +1941,34 @@ function renderDayDetail(){
     el.onclick = async ()=>{
       const i = Number(el.dataset.i);
       state.dayDetailEntries.splice(i,1);
-      if(state.dayDetailEntries.length){
-        await saveDayLog(date, state.dayDetailEntries);
-      } else {
-        await deleteDayLog(date);
-        const dates = await loadIndex();
-        const idx = dates.indexOf(date);
-        if(idx>-1){ dates.splice(idx,1); await saveIndex(dates); }
-      }
-      await refreshIndexAndRecents();
+      await persistEntries();
+      renderDayDetail();
+      renderCalendar();
+    };
+  });
+  $daySheet.querySelectorAll('.tap-val[data-ei]').forEach(el=>{
+    el.onclick = ()=>{
+      const ei = Number(el.dataset.ei), si = Number(el.dataset.si), fieldKey = el.dataset.field;
+      const ent = state.dayDetailEntries[ei];
+      const fields = ent.fields || DEFAULT_FIELDS;
+      const f = fields.find(ff=>ff.key===fieldKey);
+      openKeypad({
+        label: f.label+'を編集', unit: f.unit, decimal: f.decimal, initial: ent.sets[si][fieldKey],
+        onConfirm: async (v)=>{
+          ent.sets[si][fieldKey] = v;
+          await saveDayLog(date, state.dayDetailEntries);
+          renderDayDetail();
+        }
+      });
+    };
+  });
+  $daySheet.querySelectorAll('.del-set[data-ei]').forEach(el=>{
+    el.onclick = async ()=>{
+      const ei = Number(el.dataset.ei), si = Number(el.dataset.si);
+      const ent = state.dayDetailEntries[ei];
+      ent.sets.splice(si,1);
+      if(ent.sets.length===0){ state.dayDetailEntries.splice(ei,1); }
+      await persistEntries();
       renderDayDetail();
       renderCalendar();
     };
@@ -1500,6 +1984,7 @@ function render(){
   else if(state.view==='exercise') renderExerciseSelect();
   else if(state.view==='sets') renderSets();
   else if(state.view==='session') renderSessionReview();
+  else if(state.view==='quiz') renderQuiz();
   updateSessionBar();
 }
 
