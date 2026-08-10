@@ -55,6 +55,7 @@
   #phone[data-theme="light"] .ex-hero .ic,
   #phone[data-theme="light"] .day-ex-block .ic,
   #phone[data-theme="light"] .recent-item .ic{ color:#000000; }
+  #phone[data-theme="light"] .recent-item .name{ color:#000000; }
   #phone[data-theme="light"] .cal-cell:not(.today) .d{ color:#000000; }
   #phone[data-theme="light"] #theme-sheet h2,
   #phone[data-theme="light"] .theme-opt .info .t-name{ color:#000000; }
@@ -63,7 +64,6 @@
   #phone[data-theme="light"] .ex-hero .name,
   #phone[data-theme="light"] .day-ex-block .name{ color:#000000; }
   #phone[data-theme="light"] .day-set-row .tap-val{ color:#000000; }
-  #phone[data-theme="light"] .quiz-opt .label,
   #phone[data-theme="light"] .quiz-entry .txt .title{ color:#000000; }
 
   /* ---------- Theme: Colorful ---------- */
@@ -122,13 +122,13 @@
   #phone[data-theme="colorful"] .day-ex-block .ic{ color:#000000; }
   #phone[data-theme="colorful"] .day-ex-block .name{ color:#000000; }
   #phone[data-theme="colorful"] .day-set-row .tap-val{ color:#000000; }
-  #phone[data-theme="colorful"] .quiz-opt .label,
   #phone[data-theme="colorful"] .quiz-entry .txt .title{ color:#000000; }
   #phone[data-theme="colorful"] .primary-btn{ background: color-mix(in srgb, var(--part-color) 85%, black); }
   #phone[data-theme="colorful"] .cal-cell.has-log{ background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
   #phone[data-theme="colorful"] .cal-cell.has-log .plate-dot{ background: var(--accent); }
   #phone[data-theme="colorful"] .cal-cell{ border:1px solid var(--line); }
   #phone[data-theme="colorful"] .recent-item .ic{ color:#000000; }
+  #phone[data-theme="colorful"] .recent-item .name{ color:#000000; }
   #phone[data-theme="colorful"] .cal-cell:not(.today) .d{ color:#000000; }
   #phone[data-theme="colorful"] #theme-sheet h2,
   #phone[data-theme="colorful"] .theme-opt .info .t-name{ color:#000000; }
@@ -164,7 +164,7 @@
     display:flex; align-items:center; justify-content:space-between;
     flex-shrink:0;
   }
-  #app-header .title-block{display:flex; align-items:baseline; gap:8px;}
+  #app-header .title-block{display:flex; align-items:center; gap:8px;}
   #app-header h1{
     font-family:'Bebas Neue',sans-serif;
     font-size:30px; margin:0; letter-spacing:0.04em; line-height:1;
@@ -187,6 +187,8 @@
     color:var(--text); cursor:pointer;
   }
   .icon-btn:active{background:var(--surface-3);}
+  #timer-btn{ background:#C99A2E; border-color:#C99A2E; color:#241A05; flex-shrink:0; }
+  #timer-btn:active{ background:#B58A26; }
 
   /* ---------- Scroll body ---------- */
   #view{
@@ -237,7 +239,7 @@
   .recent-item .ic{width:36px;height:36px;flex-shrink:0;}
   .recent-item .info{flex:1; min-width:0;}
   .recent-item .date{font-size:11px; color:var(--text-dim); font-weight:600;}
-  .recent-item .name{font-size:14.5px; font-weight:700;}
+  .recent-item .name{font-size:14.5px; font-weight:700; color:var(--text);}
   .recent-item .count{font-size:12px; color:var(--accent-2); font-weight:600; font-family:'DM Mono',monospace;}
 
   /* ---------- Grid tiles (body parts / exercises) ---------- */
@@ -289,18 +291,6 @@
   .quiz-entry .txt .title{font-size:15px; font-weight:800; color:var(--text);}
   .quiz-entry .txt .sub{font-size:12px; color:var(--text-dim); margin-top:2px;}
   .quiz-entry .chev{margin-left:auto; color:var(--text-dim); flex-shrink:0;}
-
-  .quiz-progress{font-size:12px; color:var(--text-dim); font-weight:700; margin-bottom:4px;}
-  .quiz-opt{
-    display:flex; align-items:center; gap:12px;
-    background:var(--surface); border:1px solid var(--line); border-radius:16px;
-    padding:16px 14px; margin-bottom:10px; cursor:pointer;
-  }
-  .quiz-opt:active{background:var(--surface-2); transform:scale(0.99);}
-  .quiz-opt .ic{width:26px;height:26px; flex-shrink:0;}
-  .quiz-opt .label{font-size:15px; font-weight:700; color:var(--text); flex:1;}
-  .quiz-opt .chev{color:var(--text-dim); flex-shrink:0;}
-  .quiz-candidate-count{font-size:12px; color:var(--text-dim); margin:-8px 0 16px; font-weight:600;}
 
   /* ---------- Back / top row for sub views ---------- */
   .subview-top{display:flex; align-items:center; gap:12px; margin:4px 0 4px;}
@@ -402,21 +392,21 @@
   #fab svg{width:26px;height:26px;}
 
   /* ---------- Keypad modal ---------- */
-  #keypad-overlay, #addex-overlay, #theme-overlay, #timer-overlay{
+  #keypad-overlay, #addex-overlay, #theme-overlay, #timer-overlay, #ai-overlay{
     position:absolute; inset:0; background:rgba(8,8,10,0.72);
     display:none; align-items:flex-end; z-index:100;
     backdrop-filter:blur(2px);
   }
   #keypad-overlay{ z-index:110; }
-  #keypad-overlay.show, #addex-overlay.show, #theme-overlay.show, #timer-overlay.show{display:flex;}
-  #keypad-sheet, #addex-sheet, #theme-sheet, #timer-sheet{
+  #keypad-overlay.show, #addex-overlay.show, #theme-overlay.show, #timer-overlay.show, #ai-overlay.show{display:flex;}
+  #keypad-sheet, #addex-sheet, #theme-sheet, #timer-sheet, #ai-sheet{
     width:100%; background:var(--surface); border-radius:26px 26px 0 0;
     padding:20px 20px calc(20px + var(--safe-bottom));
     border-top:1px solid var(--line);
     animation:slideup 0.18s ease-out;
     max-height:82%; overflow-y:auto;
   }
-  #addex-sheet h2, #day-sheet h2, #theme-sheet h2, #timer-sheet h2{font-family:'Bebas Neue',sans-serif; font-size:22px; margin:0 0 16px; letter-spacing:0.03em; color:var(--text);}
+  #addex-sheet h2, #day-sheet h2, #theme-sheet h2, #timer-sheet h2, #ai-sheet h2{font-family:'Bebas Neue',sans-serif; font-size:22px; margin:0 0 16px; letter-spacing:0.03em; color:var(--text);}
   .field-label{font-size:12px; color:var(--text-dim); font-weight:700; letter-spacing:0.05em; text-transform:uppercase; margin:0 2px 8px;}
   .text-input{
     width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
@@ -476,6 +466,53 @@
   .timer-ctrl-btn.start{background:var(--accent); border-color:var(--accent); color:#1a0d08;}
   .timer-ctrl-btn.disabled{opacity:0.35; pointer-events:none;}
   .timer-ctrl-label{font-size:11.5px; color:var(--text-dim); font-weight:700;}
+
+  /* ---------- AI share modal ---------- */
+  .ai-photo-row{
+    display:flex; align-items:center; gap:12px;
+    background:var(--surface-2); border:1.5px dashed var(--line); border-radius:16px;
+    padding:14px; margin-bottom:16px; cursor:pointer;
+  }
+  .ai-photo-row .ic-wrap{
+    width:44px;height:44px;border-radius:12px;background:var(--surface-3);
+    display:flex;align-items:center;justify-content:center; flex-shrink:0; color:var(--text-dim);
+    overflow:hidden;
+  }
+  .ai-photo-row .ic-wrap img{width:100%;height:100%;object-fit:cover;}
+  .ai-photo-row .txt .t1{font-size:14px; font-weight:700; color:var(--text);}
+  .ai-photo-row .txt .t2{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
+  .ai-photo-row .clear-photo{margin-left:auto; color:var(--text-dim); flex-shrink:0;}
+  .ai-textarea{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+    padding:12px; font-size:14px; color:var(--text); font-family:'Inter',sans-serif;
+    margin-bottom:16px; min-height:80px; resize:vertical;
+  }
+  .ai-textarea:focus{outline:none; border-color:var(--accent);}
+  .ai-android-row{display:flex; gap:10px; margin-top:10px;}
+  .ai-app-btn{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+    padding:12px 8px; cursor:pointer; font-size:12.5px; font-weight:700; color:var(--text);
+  }
+  .ai-app-btn:active{background:var(--surface-3);}
+  .ai-note{font-size:11.5px; color:var(--text-dim); line-height:1.6; margin-top:14px;}
+
+  /* ---------- Alarm finished flash ---------- */
+  #alarm-flash-overlay{
+    position:absolute; inset:0; z-index:300;
+    background:rgba(180,40,20,0.96);
+    display:none; align-items:center; justify-content:center;
+    animation:flashPulse 1s ease-in-out infinite;
+  }
+  #alarm-flash-overlay.show{display:flex;}
+  @keyframes flashPulse{ 0%,100%{background:rgba(180,40,20,0.96);} 50%{background:rgba(230,70,40,0.96);} }
+  .alarm-flash-inner{text-align:center; padding:0 30px;}
+  .alarm-flash-icon{font-size:64px; margin-bottom:10px;}
+  .alarm-flash-text{
+    font-family:'Bebas Neue',sans-serif; font-size:42px; color:#FFFFFF;
+    letter-spacing:0.03em; margin-bottom:26px;
+  }
+  #alarm-flash-overlay .primary-btn{background:#FFFFFF; color:#8A1F0E; max-width:220px; margin:0 auto;}
   @keyframes slideup{from{transform:translateY(30px); opacity:0.4;} to{transform:translateY(0); opacity:1;}}
   #keypad-sheet .kp-label{font-size:12px; color:var(--text-dim); font-weight:700; text-align:center; letter-spacing:0.06em;}
   #keypad-sheet .kp-display{
@@ -519,10 +556,11 @@
   .day-ex-block .ic-wrap{width:36px;height:36px;border-radius:10px;background:var(--surface-3); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
   .day-ex-block .ic{width:20px;height:20px;}
   .day-ex-block .name-wrap{flex:1; min-width:0;}
+  .day-ex-block .name-row{display:flex; align-items:center; gap:6px;}
   .day-ex-block .name{font-size:14.5px; font-weight:700; color:var(--text);}
   .day-ex-block .part-tag{font-size:10.5px; font-weight:700; color:var(--text-dim); margin-top:2px;}
-  .day-ex-block .del{color:var(--text-dim); cursor:pointer; padding:4px;}
-  .reorder-btns{display:flex; align-items:center; gap:2px; flex-shrink:0;}
+  .day-ex-block .del{color:var(--danger); cursor:pointer; padding:6px; flex-shrink:0;}
+  .reorder-btns-inline{display:flex; align-items:center; gap:0px; flex-shrink:0;}
   .reorder-btn{color:var(--text-dim); cursor:pointer; padding:4px;}
   .reorder-btn.disabled{opacity:0.25; pointer-events:none;}
   .day-set-row{display:flex; align-items:center; gap:8px; padding:6px 0;}
@@ -538,7 +576,7 @@
   }
   .day-set-row .tap-val:active{border-color:var(--accent);}
   .day-set-row .x-sep{color:var(--text-dim); font-weight:700; font-size:13px;}
-  .day-set-row .del-set{color:var(--text-dim); cursor:pointer; padding:4px; flex-shrink:0;}
+  .day-set-row .del-set{color:var(--danger); cursor:pointer; padding:4px; flex-shrink:0;}
   .day-sets-line{font-family:'DM Mono',monospace; font-size:13px; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:6px;}
   .day-sets-line span{background:var(--surface-3); border-radius:8px; padding:4px 8px; color:var(--text);}
   .chip-values{font-family:'DM Mono',monospace; font-size:13.5px; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:6px;}
@@ -560,13 +598,13 @@
     <div class="title-block">
       <div class="plate-mark"></div>
       <h1>IRON LOG</h1>
+      <div class="icon-btn" id="timer-btn" title="タイマー">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 3h6"/><path d="M18.5 5.5l1.2-1.2"/></svg>
+      </div>
     </div>
     <div style="display:flex; gap:8px;">
       <div class="icon-btn" id="theme-btn" title="配色を変更">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c2.3 0 4.2-1.9 4.2-4.2C21.5 6.3 17.2 2 12 2z"/><circle cx="7" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>
-      </div>
-      <div class="icon-btn" id="timer-btn" title="タイマー">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 3h6"/><path d="M18.5 5.5l1.2-1.2"/></svg>
       </div>
       <div class="icon-btn" id="today-btn" title="今日へ">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 3v4M16 3v4"/><circle cx="12" cy="15" r="2" fill="currentColor" stroke="none"/></svg>
@@ -609,6 +647,18 @@
 
   <div id="timer-overlay">
     <div id="timer-sheet"></div>
+  </div>
+
+  <div id="ai-overlay">
+    <div id="ai-sheet"></div>
+  </div>
+
+  <div id="alarm-flash-overlay">
+    <div class="alarm-flash-inner">
+      <div class="alarm-flash-icon">⏰</div>
+      <div class="alarm-flash-text">タイマー終了！</div>
+      <button class="primary-btn" id="alarm-dismiss-btn">閉じる</button>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -699,11 +749,9 @@ const ICONS = {
   play: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>`,
   pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="5" width="4.5" height="14" rx="1.2"/><rect x="13.5" y="5" width="4.5" height="14" rx="1.2"/></svg>`,
   restart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3.5-7.1"/><path d="M3 3.5V8h4.5"/></svg>`,
-  quiz: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="10.5" cy="10.5" r="6.5"/>
-    <path d="M8.3 8.6a2.2 2.2 0 1 1 3 2.1c-.8.35-1.3 1-1.3 1.75"/>
-    <circle cx="10" cy="14" r="0.4" fill="currentColor" stroke="none"/>
-    <path d="M20 20l-4.3-4.3"/>
+  ai: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3l1.8 4.6L18 9.5l-4.2 1.9L12 16l-1.8-4.6L6 9.5l4.2-1.9z"/>
+    <path d="M19 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>
   </svg>`,
   palette: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c2.3 0 4.2-1.9 4.2-4.2C21.5 6.3 17.2 2 12 2z"/><circle cx="7" cy="10" r="1.3" fill="currentColor" stroke="none"/><circle cx="11" cy="7" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="1.3" fill="currentColor" stroke="none"/><circle cx="17.5" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>`,
 };
@@ -725,22 +773,6 @@ const DEFAULT_FIELDS = [
   { key:'reps', label:'回数', unit:'reps', decimal:false },
 ];
 function getExerciseFields(ex){ return ex.fields || DEFAULT_FIELDS; }
-
-/* Labels for the "質問形式で種目を探す" questionnaire feature */
-const QUIZ_EQUIP_LABELS = {
-  barbell:'バーベル', dumbbell:'ダンベル', cable:'マシン・ケーブル',
-  bodyweight:'自重', cardio:'有酸素マシン', custom:'その他の器具',
-};
-const QUIZ_MOVEMENT_LABELS = {
-  push:'プッシュ系（押す動作）', pull:'プル系（引く動作）', hinge:'ヒンジ系（股関節を折る）',
-  squat:'スクワット系（しゃがむ）', isolation:'アイソレーション（単関節を動かす）',
-  core:'体幹・コア系', cardio:'有酸素運動',
-};
-const QUIZ_POSTURE_LABELS = {
-  standing:'立って行う', seated:'座って行う', lying:'寝て行う', other:'その他の姿勢',
-};
-const QUIZ_STEP_LABELS = { bodypart:'部位', equip:'器具', movement:'動き', posture:'姿勢' };
-const QUIZ_STEPS = ['bodypart','equip','movement','posture'];
 
 const EXERCISES = {
   chest: [
@@ -1035,11 +1067,11 @@ function renderBodyPartSelect(){
       <div class="crumb">今日のトレーニング</div>
     </div>
     <div class="subview-title">部位を選択</div>
-    <div class="quiz-entry" id="quiz-entry-btn">
-      <div class="ic-wrap">${ICONS.quiz}</div>
+    <div class="quiz-entry" id="ai-entry-btn">
+      <div class="ic-wrap">${ICONS.ai}</div>
       <div class="txt">
-        <div class="title">質問形式で種目を探す</div>
-        <div class="sub">部位・器具・動き・姿勢から診断</div>
+        <div class="title">AIに種目を聞く</div>
+        <div class="sub">写真やメモをAIアプリに共有して調べる</div>
       </div>
       <div class="chev">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -1055,7 +1087,7 @@ function renderBodyPartSelect(){
       `).join('')}
     </div>
   `;
-  document.getElementById('quiz-entry-btn').onclick = startQuiz;
+  document.getElementById('ai-entry-btn').onclick = openAiShareModal;
   document.getElementById('back-btn').onclick = ()=>{
     if(state.session.length){ backToCalendarConfirmIfNeeded(); } else { state.view='calendar'; render(); }
   };
@@ -1246,17 +1278,22 @@ function renderSessionReview(){
       <div class="day-ex-block" data-i="${i}" style="--part-color:${BODY_PARTS.find(b=>b.id===it.bodyPartId)?.color || 'var(--accent)'};">
         <div class="hd">
           <div class="ic-wrap">${icon(it.equip,'ic')}</div>
-          <div class="name">${i+1}. ${it.name}<br><span style="font-size:11px;color:var(--text-dim);font-weight:600;">${it.bodyPartLabel}</span></div>
-          <div class="reorder-btns">
-            <div class="reorder-btn ${i===0?'disabled':''}" data-act="up" data-i="${i}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+          <div class="name-wrap">
+            <div class="name-row">
+              <div class="name">${i+1}. ${it.name}</div>
+              <div class="reorder-btns-inline">
+                <div class="reorder-btn ${i===0?'disabled':''}" data-act="up" data-i="${i}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+                </div>
+                <div class="reorder-btn ${i===items.length-1?'disabled':''}" data-act="down" data-i="${i}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+              </div>
             </div>
-            <div class="reorder-btn ${i===items.length-1?'disabled':''}" data-act="down" data-i="${i}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-            </div>
-            <div class="del" data-act="del" data-i="${i}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </div>
+            <div class="part-tag">${it.bodyPartLabel}</div>
+          </div>
+          <div class="del" data-act="del" data-i="${i}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </div>
         </div>
         <div class="chip-values">${it.sets.map(s=>setValueChips(it.fields||DEFAULT_FIELDS, s)).join('')}</div>
@@ -1286,206 +1323,16 @@ function renderSessionReview(){
   });
   $view.querySelectorAll('.del[data-act="del"]').forEach(el=>{
     el.onclick = ()=>{
-      state.session.splice(Number(el.dataset.i),1);
+      const i = Number(el.dataset.i);
+      const it = state.session[i];
+      if(!confirm(`「${it.name}」を削除しますか？`)) return;
+      state.session.splice(i,1);
       if(state.session.length===0){ state.view='bodypart'; }
       render();
     };
   });
   const saveBtn = document.getElementById('review-save-btn');
   if(saveBtn) saveBtn.onclick = saveSession;
-}
-
-/* ============================= EXERCISE FINDER (QUESTIONNAIRE) ============================= */
-
-let quizState = null;
-
-function allSearchableExercises(){
-  const list = [];
-  for(const bp of BODY_PARTS){
-    getExercisesForBodyPart(bp.id).forEach(ex=>{
-      list.push(Object.assign({}, ex, { bodyPartId: bp.id, bodyPartLabel: bp.label }));
-    });
-  }
-  return list;
-}
-
-function quizCandidates(){
-  let list = allSearchableExercises();
-  if(quizState.bodypart) list = list.filter(e=>e.bodyPartId===quizState.bodypart);
-  if(quizState.equip) list = list.filter(e=>e.equip===quizState.equip);
-  if(quizState.movement) list = list.filter(e=>(e.movement||'isolation')===quizState.movement);
-  if(quizState.posture) list = list.filter(e=>(e.posture||'other')===quizState.posture);
-  return list;
-}
-
-function startQuiz(){
-  quizState = { bodypart:null, equip:null, movement:null, posture:null };
-  state.view = 'quiz';
-  render();
-}
-
-function quizGoBackOneStep(){
-  const answered = QUIZ_STEPS.filter(s=>quizState[s]);
-  if(answered.length===0){ quizState=null; state.view='bodypart'; render(); return; }
-  quizState[answered[answered.length-1]] = null;
-  render();
-}
-
-function quizOptionsFor(step, candidates){
-  if(step==='bodypart'){
-    const ids = [...new Set(candidates.map(e=>e.bodyPartId))];
-    return ids.map(id=>{
-      const bp = BODY_PARTS.find(b=>b.id===id);
-      return { value:id, label:bp.label, icon:bp.icon };
-    });
-  }
-  if(step==='equip'){
-    const ids = [...new Set(candidates.map(e=>e.equip))];
-    return ids.map(id=>({ value:id, label:QUIZ_EQUIP_LABELS[id]||id, icon:id }));
-  }
-  if(step==='movement'){
-    const ids = [...new Set(candidates.map(e=>e.movement||'isolation'))];
-    return ids.map(id=>({ value:id, label:QUIZ_MOVEMENT_LABELS[id]||id, icon:null }));
-  }
-  if(step==='posture'){
-    const ids = [...new Set(candidates.map(e=>e.posture||'other'))];
-    return ids.map(id=>({ value:id, label:QUIZ_POSTURE_LABELS[id]||id, icon:null }));
-  }
-  return [];
-}
-
-function useQuizResult(ex){
-  state.bodyPart = BODY_PARTS.find(b=>b.id===ex.bodyPartId);
-  state.exercise = ex;
-  state.currentSets = [];
-  quizState = null;
-  state.view = 'sets';
-  render();
-  showToast(ex.name + ' を選びました');
-}
-
-function renderQuiz(){
-  document.getElementById('fab-group').style.display = 'none';
-  const candidates = quizCandidates();
-  const nextStep = QUIZ_STEPS.find(s => !quizState[s]);
-
-  // No more questions to ask, or already narrowed to 0/1 candidates → show result
-  if(!nextStep || candidates.length<=1){
-    return renderQuizResult(candidates);
-  }
-
-  const options = quizOptionsFor(nextStep, candidates);
-
-  // Only one possible answer for this question — skip straight past it
-  if(options.length===1){
-    quizState[nextStep] = options[0].value;
-    return renderQuiz();
-  }
-
-  const stepIndex = QUIZ_STEPS.indexOf(nextStep) + 1;
-
-  $view.innerHTML = `
-    <div class="subview-top">
-      <div class="icon-btn" id="quiz-back-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </div>
-      <div class="crumb">質問 ${stepIndex}/4</div>
-    </div>
-    <div class="subview-title">${QUIZ_STEP_LABELS[nextStep]}を選んでください</div>
-    <div class="quiz-candidate-count">現在 ${candidates.length} 件の候補</div>
-    ${options.map(o => `
-      <div class="quiz-opt" data-value="${o.value}">
-        ${o.icon ? icon(o.icon,'ic') : ''}
-        <div class="label">${o.label}</div>
-        <div class="chev">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
-      </div>
-    `).join('')}
-  `;
-  document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
-  $view.querySelectorAll('.quiz-opt[data-value]').forEach(el=>{
-    el.onclick = ()=>{ quizState[nextStep] = el.dataset.value; render(); };
-  });
-}
-
-function renderQuizResult(candidates){
-  document.getElementById('fab-group').style.display = 'none';
-
-  if(candidates.length===0){
-    $view.innerHTML = `
-      <div class="subview-top">
-        <div class="icon-btn" id="quiz-back-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </div>
-        <div class="crumb">診断結果</div>
-      </div>
-      <div class="subview-title">見つかりませんでした</div>
-      <div class="empty-hint">条件に合う種目が見つかりませんでした。<br>ひとつ前の質問に戻るか、最初からやり直してください。</div>
-      <button class="ghost-btn" id="quiz-retry-btn">最初からやり直す</button>
-    `;
-    document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
-    document.getElementById('quiz-retry-btn').onclick = startQuiz;
-    return;
-  }
-
-  if(candidates.length===1){
-    const ex = candidates[0];
-    const fields = getExerciseFields(ex);
-    $view.innerHTML = `
-      <div class="subview-top">
-        <div class="icon-btn" id="quiz-back-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </div>
-        <div class="crumb">診断結果</div>
-      </div>
-      <div class="subview-title">この種目です</div>
-      <div class="ex-hero" style="--part-color:${BODY_PARTS.find(b=>b.id===ex.bodyPartId)?.color || 'var(--accent)'};">
-        <div class="ic-wrap">${icon(ex.equip,'ic')}</div>
-        <div>
-          <div class="name">${ex.name}</div>
-          <div class="part">${ex.bodyPartLabel} ・ ${ex.equipLabel}</div>
-        </div>
-      </div>
-      <button class="primary-btn" id="quiz-use-btn">この種目を記録する</button>
-      <button class="ghost-btn" id="quiz-retry-btn">もう一度診断する</button>
-    `;
-    document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
-    document.getElementById('quiz-use-btn').onclick = ()=>useQuizResult(ex);
-    document.getElementById('quiz-retry-btn').onclick = startQuiz;
-    return;
-  }
-
-  // Still tied between a few candidates — let the person pick directly
-  $view.innerHTML = `
-    <div class="subview-top">
-      <div class="icon-btn" id="quiz-back-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </div>
-      <div class="crumb">診断結果</div>
-    </div>
-    <div class="subview-title">候補が${candidates.length}件あります</div>
-    ${candidates.map(ex => `
-      <div class="ex-tile" data-id="${ex.id}">
-        <div class="ic-wrap">${icon(ex.equip,'ic')}</div>
-        <div>
-          <div class="name">${ex.name}</div>
-          <div class="equip">${ex.bodyPartLabel} ・ ${ex.equipLabel}</div>
-        </div>
-        <div style="flex:1"></div>
-        <div class="chev">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
-      </div>
-    `).join('')}
-  `;
-  document.getElementById('quiz-back-btn').onclick = quizGoBackOneStep;
-  $view.querySelectorAll('.ex-tile[data-id]').forEach(el=>{
-    el.onclick = ()=>{
-      const ex = candidates.find(c=>c.id===el.dataset.id);
-      useQuizResult(ex);
-    };
-  });
 }
 
 const $kpOverlay = document.getElementById('keypad-overlay');
@@ -1705,10 +1552,11 @@ function closeThemeModal(){ $themeOverlay.classList.remove('show'); }
 $themeOverlay.addEventListener('click', (e)=>{ if(e.target===$themeOverlay) closeThemeModal(); });
 document.getElementById('theme-btn').onclick = openThemeModal;
 
-/* ============================= TIMER (STOPWATCH) ============================= */
+/* ============================= TIMER (STOPWATCH / ALARM) ============================= */
 
 const $timerOverlay = document.getElementById('timer-overlay');
 const $timerSheet = document.getElementById('timer-sheet');
+const $alarmFlashOverlay = document.getElementById('alarm-flash-overlay');
 
 const timerState = {
   minutes: 5,
@@ -1716,6 +1564,7 @@ const timerState = {
   remaining: 5 * 60,   // seconds left, counts down
   running: false,
   intervalId: null,
+  soundId: 'beep',
 };
 
 function formatMMSS(totalSeconds){
@@ -1724,11 +1573,46 @@ function formatMMSS(totalSeconds){
   return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
 }
 
+/* --- Alarm sounds: generated with the Web Audio API, no audio files needed --- */
+let audioCtx = null;
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+function playTone(freq, duration, startTime, type, gainVal){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(gainVal || 0.22, startTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(startTime);
+  osc.stop(startTime + duration + 0.05);
+}
+const ALARM_SOUNDS = {
+  beep:  { name:'ピピピ（短音）', play(){ const ctx=getAudioCtx(), now=ctx.currentTime;
+    [0,0.28,0.56].forEach(t=>playTone(1300,0.16,now+t,'square',0.2)); } },
+  buzz:  { name:'ブザー（長音）', play(){ const ctx=getAudioCtx(), now=ctx.currentTime;
+    playTone(280,1.3,now,'sawtooth',0.16); } },
+  chime: { name:'チャイム（メロディ）', play(){ const ctx=getAudioCtx(), now=ctx.currentTime;
+    [[523,0],[659,0.2],[784,0.4],[1047,0.65]].forEach(([f,t])=>playTone(f,0.35,now+t,'sine',0.2)); } },
+};
+
+async function loadAlarmSound(){
+  try{ const v = localStorage.getItem('alarm-sound'); return v && ALARM_SOUNDS[v] ? v : 'beep'; }
+  catch(e){ return 'beep'; }
+}
+async function saveAlarmSound(id){
+  try{ localStorage.setItem('alarm-sound', id); return true; }catch(e){ return false; }
+}
+
 function tickTimer(){
   if(timerState.remaining <= 0){
     stopTimer();
-    showToast('タイマー終了');
-    if(navigator.vibrate) navigator.vibrate([200,100,200]);
+    triggerAlarmFinished();
     renderTimerModal();
     return;
   }
@@ -1736,8 +1620,20 @@ function tickTimer(){
   renderTimerModal();
 }
 
+function triggerAlarmFinished(){
+  const sound = ALARM_SOUNDS[timerState.soundId] || ALARM_SOUNDS.beep;
+  try{ sound.play(); }catch(e){}
+  if(navigator.vibrate) navigator.vibrate([300,120,300,120,300]);
+  $alarmFlashOverlay.classList.add('show');
+}
+function dismissAlarmFlash(){
+  $alarmFlashOverlay.classList.remove('show');
+}
+
 function startTimer(){
   if(timerState.running) return;
+  // Unlock audio playback on the user gesture that starts the timer (required on iOS/Android).
+  try{ getAudioCtx(); }catch(e){}
   if(timerState.remaining <= 0){
     timerState.remaining = timerState.minutes * 60 + timerState.seconds;
   }
@@ -1793,6 +1689,14 @@ function renderTimerModal(){
         <div class="timer-ctrl-label">リスタート</div>
       </div>
     </div>
+    <div class="field-label" style="margin-top:26px;">アラーム音</div>
+    <div class="grid-2" id="sound-select">
+      ${Object.keys(ALARM_SOUNDS).map(id=>`
+        <div class="tile equip-opt ${timerState.soundId===id?'selected':''}" data-sound="${id}" style="padding:12px 8px;">
+          <div class="label" style="font-size:12.5px; text-align:center;">${ALARM_SOUNDS[id].name}</div>
+        </div>
+      `).join('')}
+    </div>
   `;
 
   document.getElementById('timer-min-box').onclick = ()=>{
@@ -1812,10 +1716,179 @@ function renderTimerModal(){
   document.getElementById('timer-start-btn').onclick = startTimer;
   document.getElementById('timer-stop-btn').onclick = stopTimer;
   document.getElementById('timer-restart-btn').onclick = restartTimer;
+  $timerSheet.querySelectorAll('#sound-select [data-sound]').forEach(el=>{
+    el.onclick = async ()=>{
+      const id = el.dataset.sound;
+      timerState.soundId = id;
+      await saveAlarmSound(id);
+      try{ ALARM_SOUNDS[id].play(); }catch(e){}
+      renderTimerModal();
+    };
+  });
 }
 
 $timerOverlay.addEventListener('click', (e)=>{ if(e.target===$timerOverlay) closeTimerModal(); });
 document.getElementById('timer-btn').onclick = openTimerModal;
+document.getElementById('alarm-dismiss-btn').onclick = dismissAlarmFlash;
+
+/* ============================= AI SHARE (Web Share API + Android intents) ============================= */
+
+const $aiOverlay = document.getElementById('ai-overlay');
+const $aiSheet = document.getElementById('ai-sheet');
+
+const aiShareState = {
+  photoBlob: null,
+  photoUrl: null,
+};
+
+function isAndroidDevice(){ return /Android/i.test(navigator.userAgent); }
+function isIOSDevice(){ return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
+
+/**
+ * Opens the OS share sheet with text (and an image, when supported).
+ * Works the same way on Android Chrome and iOS Safari/PWA — both surface
+ * any installed AI app (Gemini, Copilot, Apple Intelligence-backed apps, etc.)
+ * that has registered itself as a share target.
+ */
+async function shareToDevice(text, blob){
+  if(!navigator.share){
+    showToast('この端末・ブラウザは共有シートに対応していません');
+    return false;
+  }
+  const shareData = { text };
+  if(blob){
+    const file = new File([blob], 'exercise-photo.jpg', { type: blob.type || 'image/jpeg' });
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      shareData.files = [file];
+    }
+  }
+  try{
+    await navigator.share(shareData);
+    return true;
+  }catch(err){
+    if(err && err.name !== 'AbortError'){
+      console.error('share failed', err);
+      showToast('共有に失敗しました');
+    }
+    return false;
+  }
+}
+
+/**
+ * Android-only fallback: launch a specific AI app directly via an intent:// URL,
+ * carrying the text as a standard ACTION_SEND extra. If the app isn't installed,
+ * the browser_fallback_url takes the person to the web version instead.
+ * NOTE: package names below are best-effort and may change as these apps update —
+ * test on a real device and adjust the package id if the app doesn't open.
+ */
+function launchAndroidAiApp(appId, text){
+  const encodedText = encodeURIComponent(text);
+  const APPS = {
+    gemini: {
+      pkg: 'com.google.android.apps.bard',
+      fallback: 'https://gemini.google.com/app',
+    },
+    copilot: {
+      pkg: 'com.microsoft.copilot',
+      fallback: 'https://copilot.microsoft.com',
+    },
+  };
+  const app = APPS[appId];
+  if(!app) return;
+  const intentUrl = `intent:#Intent;action=android.intent.action.SEND;type=text/plain;`
+    + `package=${app.pkg};S.android.intent.extra.TEXT=${encodedText};`
+    + `S.browser_fallback_url=${encodeURIComponent(app.fallback)};end`;
+  window.location.href = intentUrl;
+}
+
+function clearAiPhoto(){
+  aiShareState.photoBlob = null;
+  if(aiShareState.photoUrl){ URL.revokeObjectURL(aiShareState.photoUrl); aiShareState.photoUrl = null; }
+}
+
+function openAiShareModal(){
+  clearAiPhoto();
+  $aiOverlay.classList.add('show');
+  renderAiShareModal();
+}
+function closeAiShareModal(){
+  $aiOverlay.classList.remove('show');
+  clearAiPhoto();
+}
+
+function renderAiShareModal(){
+  const defaultPrompt = 'このジム器具・動作の名前（トレーニング種目名）を教えてください。';
+  const android = isAndroidDevice();
+
+  $aiSheet.innerHTML = `
+    <div class="handle"></div>
+    <h2>AIに種目を聞く</h2>
+    <div class="ai-photo-row" id="ai-photo-row">
+      <div class="ic-wrap" id="ai-photo-preview">
+        ${aiShareState.photoUrl ? `<img src="${aiShareState.photoUrl}">` : icon('add','ic')}
+      </div>
+      <div class="txt">
+        <div class="t1">${aiShareState.photoBlob ? '写真を選択済み' : '写真を選ぶ・撮影する'}</div>
+        <div class="t2">任意（なくても質問だけ共有できます）</div>
+      </div>
+      ${aiShareState.photoBlob ? `<div class="clear-photo" id="ai-photo-clear">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </div>` : ''}
+    </div>
+    <input type="file" accept="image/*" capture="environment" id="ai-photo-input" style="display:none;">
+    <div class="field-label">AIへの質問文</div>
+    <textarea class="ai-textarea" id="ai-prompt-text">${defaultPrompt}</textarea>
+    <button class="primary-btn" id="ai-share-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v14"/></svg>
+      共有する
+    </button>
+    ${android ? `
+      <div class="field-label" style="margin-top:20px;">Androidで直接開く（テキストのみ）</div>
+      <div class="ai-android-row">
+        <div class="ai-app-btn" id="ai-open-gemini">Geminiで開く</div>
+        <div class="ai-app-btn" id="ai-open-copilot">Copilotで開く</div>
+      </div>
+    ` : ''}
+    <div class="ai-note">
+      ${android
+        ? '写真も一緒に調べたい場合は「共有する」から共有シートでAIアプリを選んでください。'
+        : '「共有する」をタップすると共有シートが開きます。インストール済みのAIアプリ（Apple Intelligence連携アプリなど）を選んでください。'}
+    </div>
+  `;
+
+  document.getElementById('ai-photo-row').onclick = (e)=>{
+    if(e.target.closest('#ai-photo-clear')) return;
+    document.getElementById('ai-photo-input').click();
+  };
+  document.getElementById('ai-photo-input').onchange = (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    clearAiPhoto();
+    aiShareState.photoBlob = file;
+    aiShareState.photoUrl = URL.createObjectURL(file);
+    renderAiShareModal();
+  };
+  const clearBtn = document.getElementById('ai-photo-clear');
+  if(clearBtn){
+    clearBtn.onclick = (e)=>{ e.stopPropagation(); clearAiPhoto(); renderAiShareModal(); };
+  }
+  document.getElementById('ai-share-btn').onclick = async ()=>{
+    const text = document.getElementById('ai-prompt-text').value.trim() || defaultPrompt;
+    await shareToDevice(text, aiShareState.photoBlob);
+  };
+  if(android){
+    document.getElementById('ai-open-gemini').onclick = ()=>{
+      const text = document.getElementById('ai-prompt-text').value.trim() || defaultPrompt;
+      launchAndroidAiApp('gemini', text);
+    };
+    document.getElementById('ai-open-copilot').onclick = ()=>{
+      const text = document.getElementById('ai-prompt-text').value.trim() || defaultPrompt;
+      launchAndroidAiApp('copilot', text);
+    };
+  }
+}
+
+$aiOverlay.addEventListener('click', (e)=>{ if(e.target===$aiOverlay) closeAiShareModal(); });
 
 /* ============================= SESSION SAVE ============================= */
 
@@ -1887,19 +1960,21 @@ function renderDayDetail(){
         <div class="hd">
           <div class="ic-wrap">${icon(ent.equip,'ic')}</div>
           <div class="name-wrap">
-            <div class="name">${ent.name}</div>
+            <div class="name-row">
+              <div class="name">${ent.name}</div>
+              <div class="reorder-btns-inline">
+                <div class="reorder-btn ${i===0?'disabled':''}" data-act="up" data-i="${i}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+                </div>
+                <div class="reorder-btn ${i===entries.length-1?'disabled':''}" data-act="down" data-i="${i}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+              </div>
+            </div>
             <div class="part-tag">${ent.bodyPartLabel || ''}</div>
           </div>
-          <div class="reorder-btns">
-            <div class="reorder-btn ${i===0?'disabled':''}" data-act="up" data-i="${i}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
-            </div>
-            <div class="reorder-btn ${i===entries.length-1?'disabled':''}" data-act="down" data-i="${i}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-            </div>
-            <div class="del" data-act="del" data-i="${i}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </div>
+          <div class="del" data-act="del" data-i="${i}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </div>
         </div>
         ${ent.sets.map((s,si)=>renderSetRowHtml(fields, s, i, si)).join('')}
@@ -1940,6 +2015,8 @@ function renderDayDetail(){
   $daySheet.querySelectorAll('.del[data-act="del"]').forEach(el=>{
     el.onclick = async ()=>{
       const i = Number(el.dataset.i);
+      const ent = state.dayDetailEntries[i];
+      if(!confirm(`「${ent.name}」の記録を削除しますか？`)) return;
       state.dayDetailEntries.splice(i,1);
       await persistEntries();
       renderDayDetail();
@@ -1966,6 +2043,7 @@ function renderDayDetail(){
     el.onclick = async ()=>{
       const ei = Number(el.dataset.ei), si = Number(el.dataset.si);
       const ent = state.dayDetailEntries[ei];
+      if(!confirm(`「${ent.name}」の${si+1}セット目を削除しますか？`)) return;
       ent.sets.splice(si,1);
       if(ent.sets.length===0){ state.dayDetailEntries.splice(ei,1); }
       await persistEntries();
@@ -1984,7 +2062,6 @@ function render(){
   else if(state.view==='exercise') renderExerciseSelect();
   else if(state.view==='sets') renderSets();
   else if(state.view==='session') renderSessionReview();
-  else if(state.view==='quiz') renderQuiz();
   updateSessionBar();
 }
 
@@ -2012,6 +2089,7 @@ document.getElementById('session-bar-left').onclick = ()=>{
   $view.innerHTML = `<div class="empty-hint">読み込み中…</div>`;
   const savedTheme = await loadTheme();
   applyTheme(savedTheme);
+  timerState.soundId = await loadAlarmSound();
   state.customExercises = await loadCustomExercises();
   await refreshIndexAndRecents();
   state.loading = false;
