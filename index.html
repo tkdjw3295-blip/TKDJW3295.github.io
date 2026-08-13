@@ -25,6 +25,7 @@
     --danger:#FF5A5A;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --ad-clearance: 84px;
   }
   /* ---------- Theme: Light ---------- */
   #phone[data-theme="light"]{
@@ -195,7 +196,7 @@
     flex:1;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
-    padding: 0 20px calc(24px + var(--safe-bottom));
+    padding: 0 20px calc(24px + var(--safe-bottom) + var(--ad-clearance));
   }
   #view::-webkit-scrollbar{width:0px;}
 
@@ -351,7 +352,7 @@
 
   /* ---------- Session floating bar ---------- */
   #session-bar{
-    position:absolute; left:16px; right:16px; bottom:calc(16px + var(--safe-bottom));
+    position:absolute; left:16px; right:16px; bottom:calc(16px + var(--safe-bottom) + var(--ad-clearance));
     background:var(--surface-3); border:1px solid var(--accent);
     border-radius:18px; padding:12px 16px;
     display:none; align-items:center; justify-content:space-between; gap:10px;
@@ -372,14 +373,8 @@
 
   /* ---------- FAB ---------- */
   #fab-group{
-    position:absolute; right:18px; bottom:calc(18px + var(--safe-bottom));
+    position:absolute; right:18px; bottom:calc(18px + var(--safe-bottom) + var(--ad-clearance));
     display:flex; align-items:center; gap:10px; z-index:30;
-  }
-  #fab-label{
-    background:var(--surface-3); border:1px solid var(--line);
-    color:var(--text); font-size:13px; font-weight:700;
-    padding:10px 14px; border-radius:14px; white-space:nowrap;
-    box-shadow:0 6px 18px rgba(0,0,0,0.35);
   }
   #fab{
     width:58px;height:58px; border-radius:50%; flex-shrink:0;
@@ -392,21 +387,21 @@
   #fab svg{width:26px;height:26px;}
 
   /* ---------- Keypad modal ---------- */
-  #keypad-overlay, #addex-overlay, #theme-overlay, #timer-overlay, #ai-overlay{
+  #keypad-overlay, #addex-overlay, #theme-overlay, #timer-overlay, #ai-overlay, #memo-overlay{
     position:absolute; inset:0; background:rgba(8,8,10,0.72);
     display:none; align-items:flex-end; z-index:100;
     backdrop-filter:blur(2px);
   }
   #keypad-overlay{ z-index:110; }
-  #keypad-overlay.show, #addex-overlay.show, #theme-overlay.show, #timer-overlay.show, #ai-overlay.show{display:flex;}
-  #keypad-sheet, #addex-sheet, #theme-sheet, #timer-sheet, #ai-sheet{
+  #keypad-overlay.show, #addex-overlay.show, #theme-overlay.show, #timer-overlay.show, #ai-overlay.show, #memo-overlay.show{display:flex;}
+  #keypad-sheet, #addex-sheet, #theme-sheet, #timer-sheet, #ai-sheet, #memo-sheet{
     width:100%; background:var(--surface); border-radius:26px 26px 0 0;
-    padding:20px 20px calc(20px + var(--safe-bottom));
+    padding:20px 20px calc(20px + var(--safe-bottom) + var(--ad-clearance));
     border-top:1px solid var(--line);
     animation:slideup 0.18s ease-out;
     max-height:82%; overflow-y:auto;
   }
-  #addex-sheet h2, #day-sheet h2, #theme-sheet h2, #timer-sheet h2, #ai-sheet h2{font-family:'Bebas Neue',sans-serif; font-size:22px; margin:0 0 16px; letter-spacing:0.03em; color:var(--text);}
+  #addex-sheet h2, #day-sheet h2, #theme-sheet h2, #timer-sheet h2, #ai-sheet h2, #memo-sheet h2{font-family:'Bebas Neue',sans-serif; font-size:22px; margin:0 0 16px; letter-spacing:0.03em; color:var(--text);}
   .field-label{font-size:12px; color:var(--text-dim); font-weight:700; letter-spacing:0.05em; text-transform:uppercase; margin:0 2px 8px;}
   .text-input{
     width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
@@ -500,19 +495,19 @@
   /* ---------- Alarm finished flash ---------- */
   #alarm-flash-overlay{
     position:absolute; inset:0; z-index:300;
-    background:rgba(180,40,20,0.96);
+    background:rgba(30,70,150,0.96);
     display:none; align-items:center; justify-content:center;
     animation:flashPulse 1s ease-in-out infinite;
   }
   #alarm-flash-overlay.show{display:flex;}
-  @keyframes flashPulse{ 0%,100%{background:rgba(180,40,20,0.96);} 50%{background:rgba(230,70,40,0.96);} }
+  @keyframes flashPulse{ 0%,100%{background:rgba(30,70,150,0.96);} 50%{background:rgba(50,110,210,0.96);} }
   .alarm-flash-inner{text-align:center; padding:0 30px;}
   .alarm-flash-icon{font-size:64px; margin-bottom:10px;}
   .alarm-flash-text{
     font-family:'Bebas Neue',sans-serif; font-size:42px; color:#FFFFFF;
     letter-spacing:0.03em; margin-bottom:26px;
   }
-  #alarm-flash-overlay .primary-btn{background:#FFFFFF; color:#8A1F0E; max-width:220px; margin:0 auto;}
+  #alarm-flash-overlay .primary-btn{background:#FFFFFF; color:#12356E; max-width:220px; margin:0 auto;}
   @keyframes slideup{from{transform:translateY(30px); opacity:0.4;} to{transform:translateY(0); opacity:1;}}
   #keypad-sheet .kp-label{font-size:12px; color:var(--text-dim); font-weight:700; text-align:center; letter-spacing:0.06em;}
   #keypad-sheet .kp-display{
@@ -546,7 +541,7 @@
   #day-sheet{
     width:100%; max-height:78%; overflow-y:auto;
     background:var(--surface); border-radius:26px 26px 0 0;
-    padding:22px 20px calc(24px + var(--safe-bottom));
+    padding:22px 20px calc(24px + var(--safe-bottom) + var(--ad-clearance));
     border-top:1px solid var(--line);
     animation:slideup 0.18s ease-out;
   }
@@ -576,6 +571,24 @@
   }
   .day-set-row .tap-val:active{border-color:var(--accent);}
   .day-set-row .x-sep{color:var(--text-dim); font-weight:700; font-size:13px;}
+  .memo-tag{
+    background:var(--surface-3); color:var(--text-dim); border:1px dashed var(--line);
+    border-radius:8px; padding:5px 9px; font-size:11.5px; font-weight:700; cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .memo-tag.has-memo{background:var(--accent-dim); color:var(--accent-2); border-style:solid; border-color:var(--accent);}
+  .memo-input{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+    padding:12px; font-size:14px; color:var(--text); font-family:'Inter',sans-serif;
+    margin:10px 0 18px;
+  }
+  .memo-input:focus{outline:none; border-color:var(--accent);}
+  .memo-modal-textarea{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+    padding:12px; font-size:14px; color:var(--text); font-family:'Inter',sans-serif;
+    min-height:120px; margin-bottom:16px; resize:vertical;
+  }
+  .memo-modal-textarea:focus{outline:none; border-color:var(--accent);}
   .day-set-row .del-set{color:var(--danger); cursor:pointer; padding:4px; flex-shrink:0;}
   .day-sets-line{font-family:'DM Mono',monospace; font-size:13px; color:var(--text-dim); display:flex; flex-wrap:wrap; gap:6px;}
   .day-sets-line span{background:var(--surface-3); border-radius:8px; padding:4px 8px; color:var(--text);}
@@ -623,7 +636,6 @@
   </div>
 
   <div id="fab-group">
-    <div id="fab-label">トレーニングを記録</div>
     <button id="fab" title="トレーニングを記録">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </button>
@@ -651,6 +663,10 @@
 
   <div id="ai-overlay">
     <div id="ai-sheet"></div>
+  </div>
+
+  <div id="memo-overlay">
+    <div id="memo-sheet"></div>
   </div>
 
   <div id="alarm-flash-overlay">
@@ -873,7 +889,6 @@ const state = {
   calMonth: new Date().getMonth(),
   calYear: new Date().getFullYear(),
   logDates: new Set(),      // dates (YYYY-MM-DD) that have logs, loaded from index
-  recentDays: [],           // for the "最近の記録" preview list on home
   bodyPart: null,
   exercise: null,
   currentSets: [],          // sets being built for current exercise
@@ -944,15 +959,6 @@ function getExercisesForBodyPart(bpId){
 async function refreshIndexAndRecents(){
   const dates = await loadIndex();
   state.logDates = new Set(dates);
-  const sorted = dates.slice().sort().reverse().slice(0,4);
-  const recents = [];
-  for(const d of sorted){
-    const entries = await loadDayLog(d);
-    if(entries && entries.length){
-      recents.push({date:d, entries});
-    }
-  }
-  state.recentDays = recents;
 }
 
 /* ============================= RENDER HELPERS ============================= */
@@ -1002,23 +1008,7 @@ function renderCalendar(){
   }
 
   let recentHtml = '';
-  if(state.recentDays.length){
-    recentHtml += `<div class="section-label">最近の記録</div>`;
-    for(const day of state.recentDays){
-      for(const ent of day.entries.slice(0,3)){
-        recentHtml += `<div class="recent-item" data-date="${day.date}">
-          <div class="ic-wrap" style="width:36px;height:36px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--line);">
-            ${icon(ent.equip,'ic')}
-          </div>
-          <div class="info">
-            <div class="date">${fmtDate(day.date)}</div>
-            <div class="name">${ent.name}</div>
-          </div>
-          <div class="count">${ent.sets.length}件</div>
-        </div>`;
-      }
-    }
-  } else if(!state.loading) {
+  if(!state.loading && state.logDates.size === 0){
     recentHtml = `<div class="empty-hint">まだ記録がありません。<br>右下の「＋」から今日のトレーニングを記録しましょう。</div>`;
   }
 
@@ -1048,9 +1038,6 @@ function renderCalendar(){
     render();
   };
   $view.querySelectorAll('.cal-cell[data-date]').forEach(el=>{
-    el.onclick = ()=>openDayDetail(el.dataset.date);
-  });
-  $view.querySelectorAll('.recent-item[data-date]').forEach(el=>{
     el.onclick = ()=>openDayDetail(el.dataset.date);
   });
 }
@@ -1156,6 +1143,7 @@ function renderExerciseSelect(){
 /* ============================= VIEW: SET INPUT ============================= */
 
 let pendingSet = {};
+let pendingMemo = '';
 
 function setValueChips(fields, s){
   if(fields.length===2 && fields[0].key==='weight' && fields[1].key==='reps'){
@@ -1164,21 +1152,33 @@ function setValueChips(fields, s){
   return fields.map(f => `<span>${s[f.key]}${f.unit?f.unit:''}</span>`).join('');
 }
 
+function renderCurrentSetRowHtml(fields, s, si){
+  const isStrength = fields.length===2 && fields[0].key==='weight' && fields[1].key==='reps';
+  let valsHtml;
+  if(isStrength){
+    valsHtml = `<span class="tap-val" data-si="${si}" data-field="weight">${s.weight}kg</span><span class="x-sep">×</span><span class="tap-val" data-si="${si}" data-field="reps">${s.reps}reps</span>`;
+  } else {
+    valsHtml = fields.map(f=>`<span class="tap-val" data-si="${si}" data-field="${f.key}">${s[f.key]}${f.unit}</span>`).join('');
+  }
+  const memoHtml = `<span class="memo-tag ${s.memo?'has-memo':''}" data-si="${si}">${s.memo?'メモあり':'+メモ'}</span>`;
+  return `
+    <div class="day-set-row">
+      <div class="idx">${si+1}</div>
+      <div class="vals">${valsHtml}${memoHtml}</div>
+      <div class="del-set" data-si="${si}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </div>
+    </div>
+  `;
+}
+
 function renderSets(){
   document.getElementById('fab-group').style.display = 'none';
   const bp = state.bodyPart, ex = state.exercise;
   const fields = getExerciseFields(ex);
   $view.style.setProperty('--part-color', bp.color || 'var(--accent)');
 
-  const setsHtml = state.currentSets.map((s,i)=>`
-    <div class="set-row">
-      <div class="idx">${i+1}</div>
-      <div class="vals chip-values">${setValueChips(fields, s)}</div>
-      <div class="del" data-i="${i}">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </div>
-    </div>
-  `).join('');
+  const setsHtml = state.currentSets.map((s,i)=>renderCurrentSetRowHtml(fields, s, i)).join('');
 
   const allFilled = fields.every(f => pendingSet[f.key]!==null && pendingSet[f.key]!==undefined);
 
@@ -1197,7 +1197,7 @@ function renderSets(){
       </div>
     </div>
 
-    ${setsHtml ? `<div class="section-label">記録した内容</div>${setsHtml}` : ''}
+    ${setsHtml ? `<div class="section-label">記録した内容（タップで修正）</div>${setsHtml}` : ''}
 
     <div class="add-set-row">
       ${fields.map(f => `
@@ -1207,6 +1207,8 @@ function renderSets(){
         </div>
       `).join('')}
     </div>
+    <div class="field-label">メモ（任意）</div>
+    <input type="text" class="memo-input" id="pending-memo-input" placeholder="フォームの気づき、体調など" value="${pendingMemo.replace(/"/g,'&quot;')}">
     <button class="primary-btn" id="add-set-btn" ${allFilled?'':'disabled'}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       この記録を追加
@@ -1216,7 +1218,7 @@ function renderSets(){
     </button>
   `;
 
-  document.getElementById('back-btn').onclick = ()=>{ state.view='exercise'; state.currentSets=[]; pendingSet={}; render(); };
+  document.getElementById('back-btn').onclick = ()=>{ state.view='exercise'; state.currentSets=[]; pendingSet={}; pendingMemo=''; render(); };
 
   $view.querySelectorAll('.input-box[data-field]').forEach(box=>{
     const f = fields.find(ff=>ff.key===box.dataset.field);
@@ -1226,19 +1228,42 @@ function renderSets(){
     });
   });
 
+  document.getElementById('pending-memo-input').oninput = (e)=>{ pendingMemo = e.target.value; };
+
   const addBtn = document.getElementById('add-set-btn');
   if(addBtn){
     addBtn.onclick = ()=>{
       if(!fields.every(f => pendingSet[f.key]!==null && pendingSet[f.key]!==undefined)) return;
       const newSet = {};
       fields.forEach(f => newSet[f.key] = pendingSet[f.key]);
+      if(pendingMemo.trim()) newSet.memo = pendingMemo.trim();
       state.currentSets.push(newSet);
       pendingSet = {};
+      pendingMemo = '';
       render();
     };
   }
-  $view.querySelectorAll('.set-row .del').forEach(el=>{
-    el.onclick = ()=>{ state.currentSets.splice(Number(el.dataset.i),1); render(); };
+  $view.querySelectorAll('.day-set-row .tap-val[data-si]').forEach(el=>{
+    el.onclick = ()=>{
+      const si = Number(el.dataset.si), fieldKey = el.dataset.field;
+      const f = fields.find(ff=>ff.key===fieldKey);
+      openKeypad({
+        label: f.label+'を編集', unit: f.unit, decimal: f.decimal, initial: state.currentSets[si][fieldKey],
+        onConfirm:(v)=>{ state.currentSets[si][fieldKey] = v; render(); }
+      });
+    };
+  });
+  $view.querySelectorAll('.memo-tag[data-si]').forEach(el=>{
+    el.onclick = ()=>{
+      const si = Number(el.dataset.si);
+      openMemoModal(state.currentSets[si].memo || '', (val)=>{
+        if(val) state.currentSets[si].memo = val; else delete state.currentSets[si].memo;
+        render();
+      });
+    };
+  });
+  $view.querySelectorAll('.day-set-row .del-set[data-si]').forEach(el=>{
+    el.onclick = ()=>{ state.currentSets.splice(Number(el.dataset.si),1); render(); };
   });
 
   const finishBtn = document.getElementById('finish-ex-btn');
@@ -1253,6 +1278,7 @@ function renderSets(){
       });
       state.currentSets = [];
       pendingSet = {};
+      pendingMemo = '';
       state.view = 'bodypart';
       render();
       showToast(ex.name + ' を追加しました');
@@ -1890,6 +1916,27 @@ function renderAiShareModal(){
 
 $aiOverlay.addEventListener('click', (e)=>{ if(e.target===$aiOverlay) closeAiShareModal(); });
 
+/* ============================= MEMO MODAL (per-set notes) ============================= */
+
+const $memoOverlay = document.getElementById('memo-overlay');
+const $memoSheet = document.getElementById('memo-sheet');
+
+function openMemoModal(initialText, onSave){
+  $memoSheet.innerHTML = `
+    <div class="handle"></div>
+    <h2>セットのメモ</h2>
+    <textarea class="memo-modal-textarea" id="memo-modal-text" placeholder="フォームの気づき、体調など">${initialText || ''}</textarea>
+    <button class="primary-btn" id="memo-modal-save">保存する</button>
+  `;
+  $memoOverlay.classList.add('show');
+  document.getElementById('memo-modal-save').onclick = ()=>{
+    const val = document.getElementById('memo-modal-text').value.trim();
+    $memoOverlay.classList.remove('show');
+    onSave(val);
+  };
+}
+$memoOverlay.addEventListener('click', (e)=>{ if(e.target===$memoOverlay) $memoOverlay.classList.remove('show'); });
+
 /* ============================= SESSION SAVE ============================= */
 
 async function saveSession(){
@@ -1935,10 +1982,11 @@ function renderSetRowHtml(fields, s, ei, si){
   } else {
     valsHtml = fields.map(f=>`<span class="tap-val" data-ei="${ei}" data-si="${si}" data-field="${f.key}">${s[f.key]}${f.unit}</span>`).join('');
   }
+  const memoHtml = `<span class="memo-tag ${s.memo?'has-memo':''}" data-ei="${ei}" data-si="${si}">${s.memo?'メモあり':'+メモ'}</span>`;
   return `
     <div class="day-set-row">
       <div class="idx">${si+1}</div>
-      <div class="vals">${valsHtml}</div>
+      <div class="vals">${valsHtml}${memoHtml}</div>
       <div class="del-set" data-ei="${ei}" data-si="${si}">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </div>
@@ -2036,6 +2084,17 @@ function renderDayDetail(){
           await saveDayLog(date, state.dayDetailEntries);
           renderDayDetail();
         }
+      });
+    };
+  });
+  $daySheet.querySelectorAll('.memo-tag[data-ei]').forEach(el=>{
+    el.onclick = ()=>{
+      const ei = Number(el.dataset.ei), si = Number(el.dataset.si);
+      const ent = state.dayDetailEntries[ei];
+      openMemoModal(ent.sets[si].memo || '', async (val)=>{
+        ent.sets[si].memo = val;
+        await saveDayLog(date, state.dayDetailEntries);
+        renderDayDetail();
       });
     };
   });
