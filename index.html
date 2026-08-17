@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>IRON LOG</title>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3784606195076684"
-          crossorigin="anonymous"></script>        
+          crossorigin="anonymous"></script> 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -68,6 +68,11 @@
   #phone[data-theme="light"] .day-ex-block .name{ color:#000000; }
   #phone[data-theme="light"] .day-set-row .tap-val{ color:#000000; }
   #phone[data-theme="light"] .quiz-entry .txt .title{ color:#000000; }
+  #phone[data-theme="light"] .equip-opt.selected{
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, var(--surface-2));
+  }
+  #phone[data-theme="light"] .equip-opt.selected .label{ color: var(--accent-2); }
 
   /* ---------- Theme: Colorful ---------- */
   #phone[data-theme="colorful"]{
@@ -102,6 +107,15 @@
   }
   #phone[data-theme="colorful"] .tile .ic{ color: color-mix(in srgb, var(--part-color) 75%, black); }
   #phone[data-theme="colorful"] .tile .label{ color: var(--text); font-weight:800; }
+  /* Generic equipment/sound pickers (add-exercise modal, timer sound picker) aren't
+     tied to a body part, so their icons should just be plain black — not tinted —
+     and the selected state needs to stay visible over the black-forced label color above. */
+  #phone[data-theme="colorful"] .equip-opt .ic{ color:#000000; }
+  #phone[data-theme="colorful"] .equip-opt.selected{
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 20%, var(--surface-2));
+  }
+  #phone[data-theme="colorful"] .equip-opt.selected .label{ color: var(--accent-2); }
   #phone[data-theme="colorful"] .ex-tile{
     border-width:2px;
     border-color: var(--part-color);
@@ -1014,7 +1028,7 @@ function renderCalendar(){
 
   let recentHtml = '';
   if(!state.loading && state.logDates.size === 0){
-    recentHtml = `<div class="empty-hint">まだ記録がありません。<br>右下の「＋」から今日のトレーニングを記録しましょう。</div>`;
+    recentHtml = `<div class="empty-hint">まだ記録がありません。<br>右下の「＋」から今日のトレーニングを<br>記録しましょう。</div>`;
   }
 
   $view.innerHTML = `
