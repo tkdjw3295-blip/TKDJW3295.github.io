@@ -1701,6 +1701,8 @@ const timerState = {
   running: false,
   intervalId: null,
   soundId: 'beep',
+  endAt: null,          // wall-clock timestamp (ms) the timer should finish at — the source of truth while running
+  notifyPermission: (typeof Notification!=='undefined') ? Notification.permission : 'unsupported',
 };
 
 function formatMMSS(totalSeconds){
@@ -1745,15 +1747,65 @@ async function saveAlarmSound(id){
   try{ localStorage.setItem('alarm-sound', id); return true; }catch(e){ return false; }
 }
 
+/**
+ * Recomputes remaining time from the wall-clock end timestamp rather than just
+ * decrementing by 1 each tick. Plain setInterval ticks get throttled or paused
+ * by the browser/OS once the tab or PWA is backgrounded, so counting "1 tick = 1
+ * second" silently falls behind (or stops) while hidden. Anchoring to endAt means
+ * that whenever a tick DOES fire — including the catch-up tick on visibilitychange
+ * below — the displayed time and the finish check are both still accurate.
+ */
 function tickTimer(){
-  if(timerState.remaining <= 0){
+  if(!timerState.endAt){ return; }
+  const msLeft = timerState.endAt - Date.now();
+  if(msLeft <= 0){
+    timerState.remaining = 0;
     stopTimer();
     triggerAlarmFinished();
     renderTimerModal();
     return;
   }
-  timerState.remaining -= 1;
+  timerState.remaining = Math.ceil(msLeft / 1000);
   renderTimerModal();
+}
+
+async function requestNotificationPermissionIfNeeded(){
+  if(typeof Notification === 'undefined') return;
+  if(Notification.permission === 'default'){
+    try{ timerState.notifyPermission = await Notification.requestPermission(); }
+    catch(e){ /* ignore */ }
+  } else {
+    timerState.notifyPermission = Notification.permission;
+  }
+}
+
+/**
+ * Shows a system-level notification (banner + OS notification sound/vibration)
+ * so the person is alerted even if this app is in the background or another app
+ * is in the foreground — an in-page beep alone can't do that. Requires the person
+ * to have granted notification permission; if not granted, this silently no-ops
+ * and the person only gets the in-page sound/flash/vibrate when they return here.
+ */
+function fireSystemNotification(){
+  if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  const options = {
+    body: 'トレーニングのタイマーが終了しました',
+    tag: 'iron-log-timer',
+    icon: 'icons/icon-192.png',
+    badge: 'icons/icon-192.png',
+    vibrate: [300,120,300,120,300],
+    requireInteraction: true,
+  };
+  try{
+    if(navigator.serviceWorker && navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(reg=>{
+        if(reg && reg.showNotification) reg.showNotification('⏰ タイマー終了', options);
+        else new Notification('⏰ タイマー終了', options);
+      }).catch(()=>{ try{ new Notification('⏰ タイマー終了', options); }catch(e){} });
+    } else {
+      new Notification('⏰ タイマー終了', options);
+    }
+  }catch(e){ console.error('notification failed', e); }
 }
 
 function triggerAlarmFinished(){
@@ -1761,6 +1813,7 @@ function triggerAlarmFinished(){
   try{ sound.play(); }catch(e){}
   if(navigator.vibrate) navigator.vibrate([300,120,300,120,300]);
   $alarmFlashOverlay.classList.add('show');
+  fireSystemNotification();
 }
 function dismissAlarmFlash(){
   $alarmFlashOverlay.classList.remove('show');
@@ -1770,15 +1823,18 @@ function startTimer(){
   if(timerState.running) return;
   // Unlock audio playback on the user gesture that starts the timer (required on iOS/Android).
   try{ getAudioCtx(); }catch(e){}
+  requestNotificationPermissionIfNeeded();
   if(timerState.remaining <= 0){
     timerState.remaining = timerState.minutes * 60 + timerState.seconds;
   }
+  timerState.endAt = Date.now() + timerState.remaining * 1000;
   timerState.running = true;
   timerState.intervalId = setInterval(tickTimer, 1000);
   renderTimerModal();
 }
 function stopTimer(){
   timerState.running = false;
+  timerState.endAt = null;
   if(timerState.intervalId){ clearInterval(timerState.intervalId); timerState.intervalId = null; }
   renderTimerModal();
 }
@@ -1787,6 +1843,15 @@ function restartTimer(){
   timerState.remaining = timerState.minutes * 60 + timerState.seconds;
   renderTimerModal();
 }
+
+// When the app regains focus/visibility, immediately recompute against the real
+// clock — this is what makes the alarm actually fire (sound/flash/notification)
+// even if background tick throttling meant no tick ran while it was hidden.
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible' && timerState.running && timerState.endAt){
+    tickTimer();
+  }
+});
 
 function openTimerModal(){
   $timerOverlay.classList.add('show');
@@ -1833,6 +1898,18 @@ function renderTimerModal(){
         </div>
       `).join('')}
     </div>
+    <div class="field-label" style="margin-top:22px;">バックグラウンド通知</div>
+    ${typeof Notification === 'undefined' ? `
+      <div class="ai-note">この端末・ブラウザは通知に対応していないため、アプリを開いている間のみ音とバイブでお知らせします。</div>
+    ` : timerState.notifyPermission === 'granted' ? `
+      <div class="ai-note">通知は許可済みです。アプリが他のアプリの裏に隠れていても、終了時に通知でお知らせします。</div>
+    ` : timerState.notifyPermission === 'denied' ? `
+      <div class="ai-note">通知がブロックされています。端末の設定アプリからこのサイトの通知を許可すると、バックグラウンド中も終了をお知らせできます。</div>
+    ` : `
+      <button class="ghost-btn" id="notify-permission-btn" style="margin-top:0;">通知を許可する</button>
+      <div class="ai-note">通知を許可すると、アプリを裏に隠していても終了時に通知でお知らせできます。</div>
+    `}
+    <div class="ai-note" style="margin-top:10px;">※ ブラウザの仕様上、長時間バックグラウンドが続くと動作が制限される場合があります（特にiOSで顕著です）。アプリに戻ると経過時間は正しく再計算されます。</div>
   `;
 
   document.getElementById('timer-min-box').onclick = ()=>{
@@ -1852,6 +1929,13 @@ function renderTimerModal(){
   document.getElementById('timer-start-btn').onclick = startTimer;
   document.getElementById('timer-stop-btn').onclick = stopTimer;
   document.getElementById('timer-restart-btn').onclick = restartTimer;
+  const $notifyBtn = document.getElementById('notify-permission-btn');
+  if($notifyBtn){
+    $notifyBtn.onclick = async ()=>{
+      await requestNotificationPermissionIfNeeded();
+      renderTimerModal();
+    };
+  }
   $timerSheet.querySelectorAll('#sound-select [data-sound]').forEach(el=>{
     el.onclick = async ()=>{
       const id = el.dataset.sound;
