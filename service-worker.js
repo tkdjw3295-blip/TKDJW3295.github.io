@@ -46,3 +46,17 @@ self.addEventListener('fetch', (event) => {
     caches.match(req).then((cached) => cached || fetch(req))
   );
 });
+
+// Tapping a notification (e.g. "timer finished") should bring an existing
+// app window to the front, or open a new one if none is open.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ('focus' in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow('./index.html');
+    })
+  );
+});
