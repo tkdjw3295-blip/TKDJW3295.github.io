@@ -570,19 +570,20 @@
     animation:slideup 0.18s ease-out;
   }
   #day-sheet .handle{width:36px;height:4px;border-radius:2px;background:var(--line); margin:0 auto 16px;}
-  .day-detail-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px; flex-wrap:wrap;}
-  .day-detail-head h2{margin:0;}
-  .day-title-row{display:flex; align-items:center; gap:8px;}
+  .day-detail-head{display:flex; align-items:center; gap:10px; margin-bottom:16px;}
+  .day-detail-head h2{margin:0; flex-shrink:0;}
   .day-add-btn{
     width:32px;height:32px;border-radius:10px; flex-shrink:0;
     background:var(--accent); color:#1a0d08; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
+    margin-left:10px;
   }
   .day-add-btn:active{transform:scale(0.94);}
   .day-title-pill{
+    flex:1; min-width:0;
     font-size:12.5px; font-weight:700; color:var(--text-dim); cursor:pointer;
     background:var(--surface-2); border:1px dashed var(--line); border-radius:12px;
-    padding:8px 12px; max-width:60%; text-align:right;
+    padding:10px 14px; text-align:left;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .day-title-pill.filled{
@@ -1776,20 +1777,18 @@ function playTone(freq, duration, startTime, type, gainVal){
 const ALARM_SOUNDS = {
   beep:  { name:'ピピピ（短音）', play(){ const ctx=getAudioCtx(), now=ctx.currentTime;
     [0,0.28,0.56].forEach(t=>playTone(1300,0.16,now+t,'square',0.2)); } },
-  voice: { name:'応援ボイス「レッツゴー！」', play(){
-    if(!('speechSynthesis' in window)){
-      // TTS unsupported on this device/browser — fall back to a bright chime instead
-      const ctx=getAudioCtx(), now=ctx.currentTime;
-      [[659,0],[880,0.15],[1046,0.3]].forEach(([f,t])=>playTone(f,0.25,now+t,'sine',0.22));
-      return;
-    }
-    try{ window.speechSynthesis.cancel(); }catch(e){}
-    const utter = new SpeechSynthesisUtterance('休憩終わり！レッツゴー！');
-    utter.lang = 'ja-JP';
-    utter.pitch = 1.3;
-    utter.rate = 1.15;
-    utter.volume = 1;
-    window.speechSynthesis.speak(utter);
+  airhorn: { name:'エアホーン', play(){
+    const now = getAudioCtx().currentTime;
+    // Layered sawtooth/square chord per blast for a deep, brassy horn timbre;
+    // two short blasts then one held much longer, like a classic airhorn cadence.
+    const blast = (start, dur)=>{
+      [131, 165, 196].forEach((f, i)=>{
+        playTone(f, dur, start, i===0 ? 'sawtooth' : 'square', i===0 ? 0.3 : 0.15);
+      });
+    };
+    blast(now, 0.6);
+    blast(now + 0.68, 0.6);
+    blast(now + 1.36, 1.6);
   } },
   chime: { name:'チャイム（メロディ）', play(){ const ctx=getAudioCtx(), now=ctx.currentTime;
     [[523,0],[659,0.2],[784,0.4],[1047,0.65]].forEach(([f,t])=>playTone(f,0.35,now+t,'sine',0.2)); } },
@@ -2256,11 +2255,9 @@ function renderDayDetail(){
     <div class="handle"></div>
     <div class="day-detail-head">
       <h2>${fmtDate(date)}</h2>
-      <div class="day-title-row">
-        <div class="day-title-pill ${title?'filled':''}" id="day-title-pill">${title ? title : '今日は何を鍛える？'}</div>
-        <div class="day-add-btn" id="day-add-btn" title="この日の記録を追加">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </div>
+      <div class="day-title-pill ${title?'filled':''}" id="day-title-pill">${title ? title : '今日は何を鍛える？'}</div>
+      <div class="day-add-btn" id="day-add-btn" title="この日の記録を追加">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       </div>
     </div>
     ${entries.length ? entries.map((ent,i)=>{
