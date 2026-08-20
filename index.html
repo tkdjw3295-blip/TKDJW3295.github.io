@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>IRON LOG</title>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3784606195076684"
-          crossorigin="anonymous"></script> 
+<title>IRON LOG — トレーニング記録</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
@@ -1778,21 +1776,39 @@ const ALARM_SOUNDS = {
   beep:  { name:'ピピピ（短音）', play(){ const ctx=getAudioCtx(), now=ctx.currentTime;
     [0,0.28,0.56].forEach(t=>playTone(1300,0.16,now+t,'square',0.2)); } },
   airhorn: { name:'エアホーン', play(){
-    const now = getAudioCtx().currentTime;
-    // Layered sawtooth/square chord per blast for a deep, brassy horn timbre;
-    // two short blasts then one held much longer, like a classic airhorn cadence.
-    const blast = (start, dur)=>{
-      [131, 165, 196].forEach((f, i)=>{
-        playTone(f, dur, start, i===0 ? 'sawtooth' : 'square', i===0 ? 0.3 : 0.15);
-      });
-    };
-    blast(now, 0.6);
-    blast(now + 0.68, 0.6);
-    blast(now + 1.36, 1.6);
+    // Use the real air-horn recording when it's available; fall back to the
+    // synthesized version if the audio file is missing or fails to play.
+    try{
+      const audio = new Audio('sounds/airhorn.mp3');
+      audio.volume = 1;
+      const p = audio.play();
+      if(p && p.catch) p.catch(()=>playSynthAirhorn());
+    }catch(e){
+      playSynthAirhorn();
+    }
   } },
   chime: { name:'チャイム（メロディ）', play(){ const ctx=getAudioCtx(), now=ctx.currentTime;
     [[523,0],[659,0.2],[784,0.4],[1047,0.65]].forEach(([f,t])=>playTone(f,0.35,now+t,'sine',0.2)); } },
 };
+function playSynthAirhorn(){
+  const now = getAudioCtx().currentTime;
+  // Layered sawtooth/square chord per blast for a deep, brassy horn timbre;
+  // two short blasts then one held much longer, like a classic airhorn cadence.
+  const blast = (start, dur)=>{
+    [131, 165, 196].forEach((f, i)=>{
+      playTone(f, dur, start, i===0 ? 'sawtooth' : 'square', i===0 ? 0.3 : 0.15);
+    });
+  };
+  blast(now, 0.6);
+  blast(now + 0.68, 0.6);
+  blast(now + 1.36, 1.6);
+}
+function unlockAirhornAudio(){
+  const audio = new Audio('sounds/airhorn.mp3');
+  audio.volume = 0;
+  const p = audio.play();
+  if(p && p.then){ p.then(()=>{ audio.pause(); audio.currentTime = 0; }).catch(()=>{}); }
+}
 
 async function loadAlarmSound(){
   try{ const v = localStorage.getItem('alarm-sound'); return v && ALARM_SOUNDS[v] ? v : 'beep'; }
@@ -1878,6 +1894,7 @@ function startTimer(){
   if(timerState.running) return;
   // Unlock audio playback on the user gesture that starts the timer (required on iOS/Android).
   try{ getAudioCtx(); }catch(e){}
+  try{ unlockAirhornAudio(); }catch(e){}
   requestNotificationPermissionIfNeeded();
   if(timerState.remaining <= 0){
     timerState.remaining = timerState.minutes * 60 + timerState.seconds;
