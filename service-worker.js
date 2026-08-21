@@ -2,13 +2,14 @@
 // Minimal app-shell cache for GitHub Pages. No server calls, no external APIs —
 // only same-origin static files are ever cached or fetched here.
 
-const CACHE_NAME = 'weight-training-log-2';
+const CACHE_NAME = 'weight-training-log-v1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './sounds/airhorn.mp3',
 ];
 
 self.addEventListener('install', (event) => {
