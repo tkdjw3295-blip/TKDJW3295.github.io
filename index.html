@@ -513,6 +513,12 @@
   }
   .ai-app-btn:active{background:var(--surface-3);}
   .ai-note{font-size:11.5px; color:var(--text-dim); line-height:1.6; margin-top:14px;}
+  .freeform-field-row{
+    display:flex; align-items:center; gap:10px;
+    background:var(--surface-3); border-radius:12px; padding:10px 12px; margin-bottom:8px;
+  }
+  .freeform-field-label{font-size:13.5px; font-weight:700; color:var(--text); flex:1;}
+  .freeform-field-del{color:var(--danger); cursor:pointer; padding:4px; flex-shrink:0;}
 
   /* ---------- Alarm finished flash ---------- */
   #alarm-flash-overlay{
@@ -802,6 +808,21 @@ const ICONS = {
     <circle cx="24" cy="24" r="18"/>
     <path d="M14 24 H19 L22 17 L27 31 L30 24 H34"/>
   </svg>`,
+  exercise: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 4 L10 26 H21 L18 44 L38 20 H26 Z"/>
+  </svg>`,
+  stretch: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="24" cy="8" r="4"/>
+    <path d="M24 12 L24 27"/>
+    <path d="M24 16 L12 8"/>
+    <path d="M24 16 L36 8"/>
+    <path d="M24 27 L14 41"/>
+    <path d="M24 27 L34 41"/>
+  </svg>`,
+  freeform: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 6 L42 16 L16 42 L6 44 L8 34 Z"/>
+    <path d="M27 11 L37 21"/>
+  </svg>`,
   reorder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg>`,
   play: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>`,
   pause: `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="5" width="4.5" height="14" rx="1.2"/><rect x="13.5" y="5" width="4.5" height="14" rx="1.2"/></svg>`,
@@ -822,7 +843,14 @@ const BODY_PARTS = [
   { id:'arms',      label:'腕',   sub:'Arms',      icon:'arms',      color:'#FFC93D' },
   { id:'abs',       label:'腹',   sub:'Abs',       icon:'abs',       color:'#3DD9C7' },
   { id:'aerobic',   label:'有酸素', sub:'Cardio',  icon:'cardio',    color:'#33C6E0' },
+  { id:'exercise',  label:'エクササイズ', sub:'Exercise', icon:'exercise', color:'#FF9142' },
+  { id:'stretch',   label:'ストレッチ',   sub:'Stretch',  icon:'stretch',  color:'#9BE15D' },
+  { id:'freeform',  label:'自由入力',     sub:'Free',     icon:'freeform', color:'#C4A7FF' },
 ];
+
+/* Body-part categories where exercises are entirely user-defined (name + free-form
+   record fields), rather than picked from a fixed equipment-type list. */
+const FREEFORM_BODY_PARTS = ['exercise', 'stretch', 'freeform'];
 
 /* Default field schema (weight/reps) used by all strength exercises unless overridden */
 const DEFAULT_FIELDS = [
@@ -909,6 +937,16 @@ const EXERCISES = {
       ]
     },
   ],
+  /* No default exercises — the person defines their own name + record fields entirely */
+  exercise: [],
+  stretch: [
+    { id:'yoga', name:'ヨガ', equip:'stretch', equipLabel:'ストレッチ',
+      fields:[
+        { key:'duration', label:'時間', unit:'min', decimal:false },
+      ]
+    },
+  ],
+  freeform: [],
 };
 
 const DOW = ['日','月','火','水','木','金','土'];
@@ -1627,6 +1665,9 @@ const CARDIO_FIELD_OPTIONS = [
  * - Call with `bp, existingEx` to edit an existing user-added exercise in place.
  */
 function openAddExerciseModal(bp, existingEx){
+  if(FREEFORM_BODY_PARTS.includes(bp.id)){
+    return openFreeformExerciseModal(bp, existingEx);
+  }
   const isEdit = !!existingEx;
   let selectedEquip = existingEx
     ? { equip: existingEx.equip, label: existingEx.equip==='custom' ? existingEx.equipLabel : (EQUIP_OPTIONS.find(o=>o.equip===existingEx.equip)||{}).label }
@@ -1750,6 +1791,112 @@ function closeAddExerciseModal(){
   $addexOverlay.classList.remove('show');
 }
 $addexOverlay.addEventListener('click', (e)=>{ if(e.target===$addexOverlay) closeAddExerciseModal(); });
+
+/**
+ * Free-form exercise modal, used for the Exercise / Stretch / Free-form body-part
+ * categories: instead of picking an equipment type, the person names the exercise
+ * and freely defines whatever fields they want to record for it (any number of them).
+ */
+function openFreeformExerciseModal(bp, existingEx){
+  const isEdit = !!existingEx;
+  let customFields = (existingEx && existingEx.fields) ? existingEx.fields.map(f=>({...f})) : [];
+
+  function renderFieldsList(){
+    const $list = document.getElementById('freeform-fields-list');
+    if(!$list) return;
+    $list.innerHTML = customFields.length ? customFields.map((f,i)=>`
+      <div class="freeform-field-row" data-i="${i}">
+        <div class="freeform-field-label">${f.label}${f.unit?' ('+f.unit+')':''}</div>
+        <div class="freeform-field-del" data-i="${i}">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </div>
+      </div>
+    `).join('') : `<div class="ai-note">まだ項目がありません。下の欄から追加してください（例：時間・距離・回数など）。</div>`;
+    $list.querySelectorAll('.freeform-field-del[data-i]').forEach(el=>{
+      el.onclick = ()=>{ customFields.splice(Number(el.dataset.i),1); renderFieldsList(); checkReady(); };
+    });
+  }
+
+  $addexSheet.innerHTML = `
+    <div class="handle"></div>
+    <h2>${isEdit ? '種目を編集' : '種目を追加'}（${bp.label}）</h2>
+    <div class="field-label">種目名</div>
+    <input type="text" id="new-ex-name" class="text-input" placeholder="例：${bp.id==='stretch'?'ハムストリングスストレッチ':bp.id==='exercise'?'ジョギング':'好きな名前'}" maxlength="20" value="${(existingEx?existingEx.name:'').replace(/"/g,'&quot;')}">
+    <div class="field-label">記録する項目（自由に追加できます）</div>
+    <div id="freeform-fields-list"></div>
+    <div style="display:flex; gap:8px; margin:10px 0;">
+      <input type="text" id="new-field-label" class="text-input" placeholder="項目名（例：距離）" style="flex:2; margin-bottom:0;">
+      <input type="text" id="new-field-unit" class="text-input" placeholder="単位（任意）" style="flex:1; margin-bottom:0;">
+    </div>
+    <button class="ghost-btn" id="add-field-btn" style="margin-top:0;">
+      ＋ この項目を追加
+    </button>
+    <button class="primary-btn" id="confirm-add-ex" disabled style="margin-top:18px;">${isEdit ? '保存する' : 'この種目を追加'}</button>
+  `;
+  $addexOverlay.classList.add('show');
+  renderFieldsList();
+
+  const $nameInput = document.getElementById('new-ex-name');
+  const $fieldLabelInput = document.getElementById('new-field-label');
+  const $fieldUnitInput = document.getElementById('new-field-unit');
+  const $confirmBtn = document.getElementById('confirm-add-ex');
+
+  function checkReady(){
+    $confirmBtn.disabled = !($nameInput.value.trim().length > 0 && customFields.length > 0);
+  }
+  $nameInput.addEventListener('input', checkReady);
+
+  document.getElementById('add-field-btn').onclick = ()=>{
+    const label = $fieldLabelInput.value.trim();
+    if(!label){ showToast('項目名を入力してください'); return; }
+    customFields.push({
+      key: 'f_' + Math.random().toString(36).slice(2, 8),
+      label,
+      unit: $fieldUnitInput.value.trim(),
+      decimal: true,
+    });
+    $fieldLabelInput.value = '';
+    $fieldUnitInput.value = '';
+    renderFieldsList();
+    checkReady();
+    $fieldLabelInput.focus();
+  };
+
+  checkReady();
+
+  $confirmBtn.onclick = async ()=>{
+    const name = $nameInput.value.trim();
+    if(!name || customFields.length===0) return;
+    const exObj = {
+      id: existingEx ? existingEx.id : ('custom_' + Date.now()),
+      name,
+      equip: bp.id,
+      equipLabel: bp.label,
+      custom: true,
+      fields: customFields.slice(),
+    };
+    if(!state.customExercises[bp.id]) state.customExercises[bp.id] = [];
+    if(isEdit){
+      const idx = state.customExercises[bp.id].findIndex(x=>x.id===existingEx.id);
+      if(idx>-1) state.customExercises[bp.id][idx] = exObj;
+    } else {
+      state.customExercises[bp.id].push(exObj);
+    }
+    await saveCustomExercises(state.customExercises);
+    closeAddExerciseModal();
+
+    if(isEdit){
+      render();
+      showToast(name + ' を更新しました');
+    } else {
+      state.exercise = exObj;
+      state.currentSets = [];
+      state.view = 'sets';
+      render();
+      showToast(name + ' を追加しました');
+    }
+  };
+}
 
 /* ============================= THEME ============================= */
 
