@@ -943,71 +943,157 @@ const state = {
   theme: 'dark',
 };
 
-/* ============================= STORAGE (localStorage — GitHub Pages safe) =============================
-   No server calls, no fetch, no window.storage. Everything is synchronous localStorage wrapped
-   in async functions so the rest of the app (which awaits these) keeps working unchanged.
-   Keys:
-     - "log-index"      -> JSON array of date strings ("YYYY-MM-DD") that have a log
-     - "log-YYYY-MM-DD" -> JSON array of that day's logged entries
-     - "custom-exercises" -> JSON object of user-added exercises per body part
-     - "theme"          -> plain string, one of 'dark' | 'light' | 'colorful'
+/* ============================= STORAGE (IndexedDB — GitHub Pages safe) =============================
+   No server calls, no fetch, no window.storage. IndexedDB is used for all persistence —
+   it's asynchronous natively (no main-thread blocking like localStorage), has a much higher
+   storage ceiling, and can store plain JS objects/arrays directly without JSON.stringify.
+   Object stores:
+     - "logs"      keyPath 'date'  -> { date, entries }            one record per day's log
+     - "dayTitles" keyPath 'date'  -> { date, title }               optional "何を鍛える？" note
+     - "meta"      keyPath 'key'   -> { key, value }                theme / alarm sound / custom exercises
+   A one-time migration copies over anyone's existing localStorage data (from the previous
+   version of this app) into IndexedDB the first time this runs, so no one's history is lost.
 ============================================================================================= */
 
-const LS_INDEX_KEY = 'log-index';
-function dayLogKey(date){ return `log-${date}`; }
+const IDB_NAME = 'iron-log-db';
+const IDB_VERSION = 1;
+let idbPromise = null;
+
+function openIDB(){
+  if(idbPromise) return idbPromise;
+  idbPromise = new Promise((resolve, reject)=>{
+    if(!('indexedDB' in window)){ reject(new Error('IndexedDB unsupported')); return; }
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = (e)=>{
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains('logs')) db.createObjectStore('logs', { keyPath:'date' });
+      if(!db.objectStoreNames.contains('dayTitles')) db.createObjectStore('dayTitles', { keyPath:'date' });
+      if(!db.objectStoreNames.contains('meta')) db.createObjectStore('meta', { keyPath:'key' });
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+  return idbPromise;
+}
+function idbGet(storeName, key){
+  return openIDB().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).get(key);
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  }));
+}
+function idbGetAllKeys(storeName){
+  return openIDB().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).getAllKeys();
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  }));
+}
+function idbPut(storeName, value){
+  return openIDB().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).put(value);
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  }));
+}
+function idbDelete(storeName, key){
+  return openIDB().then(db => new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).delete(key);
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  }));
+}
 
 async function loadIndex(){
-  try{
-    const raw = localStorage.getItem(LS_INDEX_KEY);
-    return raw ? JSON.parse(raw) : [];
-  }catch(e){ return []; }
+  try{ return await idbGetAllKeys('logs'); }
+  catch(e){ return []; }
 }
-async function saveIndex(dates){
-  try{
-    localStorage.setItem(LS_INDEX_KEY, JSON.stringify(dates));
-    return true;
-  }catch(e){ return false; }
-}
+// IndexedDB's own keys ARE the date index, so there's nothing separate to persist —
+// kept as a no-op so every existing call site still works unchanged.
+async function saveIndex(_dates){ return true; }
+
 async function loadDayLog(date){
-  try{
-    const raw = localStorage.getItem(dayLogKey(date));
-    return raw ? JSON.parse(raw) : [];
-  }catch(e){ return []; }
+  try{ const rec = await idbGet('logs', date); return (rec && rec.entries) ? rec.entries : []; }
+  catch(e){ return []; }
 }
 async function saveDayLog(date, data){
-  try{
-    localStorage.setItem(dayLogKey(date), JSON.stringify(data));
-    return true;
-  }catch(e){ return false; }
+  try{ await idbPut('logs', { date, entries:data }); return true; }
+  catch(e){ return false; }
 }
 async function deleteDayLog(date){
-  try{ localStorage.removeItem(dayLogKey(date)); }catch(e){}
+  try{ await idbDelete('logs', date); }catch(e){}
 }
 async function loadCustomExercises(){
-  try{
-    const raw = localStorage.getItem('custom-exercises');
-    return raw ? JSON.parse(raw) : {};
-  }catch(e){ return {}; }
+  try{ const rec = await idbGet('meta', 'custom-exercises'); return rec ? rec.value : {}; }
+  catch(e){ return {}; }
 }
 async function saveCustomExercises(obj){
-  try{
-    localStorage.setItem('custom-exercises', JSON.stringify(obj));
-    return true;
-  }catch(e){ return false; }
+  try{ await idbPut('meta', { key:'custom-exercises', value:obj }); return true; }
+  catch(e){ return false; }
 }
 async function loadDayTitle(date){
-  try{ return localStorage.getItem('day-title-'+date) || ''; }
+  try{ const rec = await idbGet('dayTitles', date); return (rec && rec.title) ? rec.title : ''; }
   catch(e){ return ''; }
 }
 async function saveDayTitle(date, text){
   try{
-    if(text) localStorage.setItem('day-title-'+date, text);
-    else localStorage.removeItem('day-title-'+date);
+    if(text) await idbPut('dayTitles', { date, title:text });
+    else await idbDelete('dayTitles', date);
     return true;
   }catch(e){ return false; }
 }
 function getExercisesForBodyPart(bpId){
   return (EXERCISES[bpId]||[]).concat(state.customExercises[bpId]||[]);
+}
+
+/**
+ * One-time migration: copies any data from the previous localStorage-based version of
+ * this app into IndexedDB, then marks itself done so it never re-runs. Safe to call even
+ * if there's nothing to migrate (a brand-new install), and never deletes the old
+ * localStorage keys — they're just left in place, unused, as a safety net.
+ */
+async function migrateFromLocalStorageIfNeeded(){
+  try{
+    const already = await idbGet('meta', 'migrated-from-localstorage');
+    if(already && already.value) return;
+
+    const oldIndexRaw = localStorage.getItem('log-index');
+    if(oldIndexRaw){
+      const dates = JSON.parse(oldIndexRaw);
+      for(const d of dates){
+        const raw = localStorage.getItem('log-'+d);
+        if(raw){
+          try{ await idbPut('logs', { date:d, entries: JSON.parse(raw) }); }catch(e){}
+        }
+      }
+    }
+    const ceRaw = localStorage.getItem('custom-exercises');
+    if(ceRaw){ try{ await idbPut('meta', { key:'custom-exercises', value: JSON.parse(ceRaw) }); }catch(e){} }
+
+    const themeRaw = localStorage.getItem('theme');
+    if(themeRaw){ await idbPut('meta', { key:'theme', value: themeRaw }); }
+
+    const soundRaw = localStorage.getItem('alarm-sound');
+    if(soundRaw){ await idbPut('meta', { key:'alarm-sound', value: soundRaw }); }
+
+    for(let i=0; i<localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.indexOf('day-title-')===0){
+        const date = k.slice('day-title-'.length);
+        const title = localStorage.getItem(k);
+        if(title){ try{ await idbPut('dayTitles', { date, title }); }catch(e){} }
+      }
+    }
+
+    await idbPut('meta', { key:'migrated-from-localstorage', value:true });
+  }catch(e){
+    // IndexedDB unavailable or migration failed — the app still works, just starting fresh in IDB.
+    console.error('localStorage → IndexedDB migration skipped:', e);
+  }
 }
 
 async function refreshIndexAndRecents(){
@@ -1679,13 +1765,13 @@ const $themeSheet = document.getElementById('theme-sheet');
 
 async function loadTheme(){
   try{
-    const raw = localStorage.getItem('theme');
-    return raw ? raw : 'dark';
+    const rec = await idbGet('meta', 'theme');
+    return rec ? rec.value : 'dark';
   }catch(e){ return 'dark'; }
 }
 async function saveTheme(themeId){
   try{
-    localStorage.setItem('theme', themeId);
+    await idbPut('meta', { key:'theme', value:themeId });
     return true;
   }catch(e){ return false; }
 }
@@ -1811,11 +1897,11 @@ function unlockAirhornAudio(){
 }
 
 async function loadAlarmSound(){
-  try{ const v = localStorage.getItem('alarm-sound'); return v && ALARM_SOUNDS[v] ? v : 'beep'; }
+  try{ const rec = await idbGet('meta', 'alarm-sound'); return (rec && ALARM_SOUNDS[rec.value]) ? rec.value : 'beep'; }
   catch(e){ return 'beep'; }
 }
 async function saveAlarmSound(id){
-  try{ localStorage.setItem('alarm-sound', id); return true; }catch(e){ return false; }
+  try{ await idbPut('meta', { key:'alarm-sound', value:id }); return true; }catch(e){ return false; }
 }
 
 /**
@@ -2439,6 +2525,7 @@ document.getElementById('session-bar-left').onclick = ()=>{
 
 (async function init(){
   $view.innerHTML = `<div class="empty-hint">読み込み中…</div>`;
+  await migrateFromLocalStorageIfNeeded();
   const savedTheme = await loadTheme();
   applyTheme(savedTheme);
   timerState.soundId = await loadAlarmSound();
